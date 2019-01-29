@@ -1,8 +1,8 @@
 <idea-plugin>
     <id>org.jetbrains</id>
-    <name>Hello Action Project</name>
+    <name>Navigation wheel</name>
     <version>0.0.1</version>
-    <vendor email="dummy" url="dummy">dummy</vendor>
+    <vendor email="skyd96@gmail.com" url="skydi17">skydi17</vendor>
 
     <depends>com.intellij.modules.lang</depends>
 
@@ -10,10 +10,18 @@
     </extensions>
 
     <actions>
-        <group id="MyPlugin.SampleMenu" text="Greeting" description="Greeting menu">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="Myplugin.Textboxes" class="HelloAction" text="Hello" description="Says hello"/>
-        </group>
+        <action id="Myplugin.Textboxes" class="src.com.plugin.actions.WheelPlugin" text="Open" description="Open wheel plugin">
+            <keyboard-shortcut first-keystroke="control alt G" second-keystroke="C" keymap="$default"/>
+        </action>
+        <action id="closeFile" class="src.com.plugin.actions.CloseFile" text="Close" description="Close file in wheel plugin">
+
+        </action>
+        <action id="pinFile" class="src.com.plugin.actions.PinFile" text="Pin" description="Pin file in wheel plugin">
+
+        </action>
+        <action id="openFile" class="src.com.plugin.actions.OpenFile" text="Open" description="Open file in IDE">
+
+        </action>
     </actions>
 
 </idea-plugin>
