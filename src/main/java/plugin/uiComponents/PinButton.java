@@ -1,4 +1,4 @@
-package src.com.plugin.uiComponents;
+package plugin.uiComponents;
 
 import javax.swing.*;
 

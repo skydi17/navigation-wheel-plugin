@@ -1,4 +1,4 @@
-package src.com.plugin.listener;
+package plugin.listener;
 
 import java.awt.*;
 import java.awt.event.*;

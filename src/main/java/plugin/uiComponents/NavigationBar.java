@@ -1,10 +1,10 @@
-package src.com.plugin.uiComponents;
+package plugin.uiComponents;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.JBBox;
-import src.com.plugin.listener.UserClicksListener;
+import plugin.listener.UserClicksListener;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package src.com.plugin.actions;
+package plugin.actions;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.fileEditor.FileEditorManager;
