@@ -11,7 +11,7 @@
 
     <actions>
         <action id="Myplugin.Textboxes" class="plugin.actions.WheelPlugin" text="Open" description="Open wheel plugin">
-            <keyboard-shortcut first-keystroke="control alt G" second-keystroke="C" keymap="$default"/>
+            <keyboard-shortcut first-keystroke="control alt N" second-keystroke="B" keymap="$default"/>
         </action>
         <action id="closeFile" class="plugin.actions.CloseFile" text="Close" description="Close file in wheel plugin">
 

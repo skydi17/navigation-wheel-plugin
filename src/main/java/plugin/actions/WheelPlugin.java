@@ -30,6 +30,15 @@ public class WheelPlugin extends AnAction {
     public void actionPerformed(AnActionEvent event) {
         Project project = event.getProject();
         JFrame window = new JFrame();
+        window.setTitle("Navigation Wheel");
+        window.setUndecorated(true);
+        window.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+        window.setLocationRelativeTo(WindowManager.getInstance().getFrame(project).getJMenuBar());
+        Dimension size = new Dimension();
+        size.setSize(400, 400);
+        window.setMinimumSize(size);
+        window.setMaximumSize(size);
+        window.setSize(800, 800);
         viewBar(project, window);
     }
 
@@ -47,7 +56,7 @@ public class WheelPlugin extends AnAction {
         final JBPopupFactory popupFactory = JBPopupFactory.getInstance();
         final RelativePoint point = popupFactory.guessBestPopupLocation(event.getDataContext());
         jbPopup.show(point); */
-        int x = 10, y = 10, w = 500;
+        int x = 67, y = 60, w = 400;
         //g.drawOval(x, y, w, w);
         double l = 0;
         ArrayList<FileButton> fileButtons = new ArrayList<>(files.length);
@@ -58,16 +67,26 @@ public class WheelPlugin extends AnAction {
             FileButton file = new FileButton(files[i], x + w/2 + w/2*Math.cos(l), y + w/2 + w/2*Math.sin(l));
             file.setText(files[i].getName());
             file.setBounds((int)(x + w/2 + w/2*Math.cos(l - Math.PI/files.length) - 50),
-                    (int) (y + w/2 + w/2*Math.sin(l - Math.PI/files.length) + 10), 100, 20);
+                    (int) (y + w/2 + w/2*Math.sin(l - Math.PI/files.length) + 10), 125, 25);
             file.setEnabled(true);
             file.setVisible(true);
+            file.setFocusable(Boolean.FALSE);
+            file.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    manager.openFile(file.getVirtualFile(), Boolean.TRUE);
+                    window.dispose();
+                }
+            });
 
             window.add(file);
             fileButtons.add(file);
             CloseButton closeButton = new CloseButton(files[i]);
-            closeButton.setBounds(file.getX() + file.getWidth(), file.getY(), 20, 20);
+            closeButton.setBounds(file.getX() + file.getWidth(), file.getY(), 20, 25);
             closeButton.setEnabled(true);
             closeButton.setVisible(true);
+            closeButton.setText("x");
+            closeButton.setFocusable(Boolean.FALSE);
             closeButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
