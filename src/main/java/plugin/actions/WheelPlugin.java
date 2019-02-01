@@ -33,12 +33,16 @@ public class WheelPlugin extends AnAction {
         window.setTitle("Navigation Wheel");
         window.setUndecorated(true);
         window.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
-        window.setLocationRelativeTo(WindowManager.getInstance().getFrame(project).getJMenuBar());
+        //window.setLocationRelativeTo(WindowManager.getInstance().getFrame(project).getJMenuBar());
+        Point point = MouseInfo.getPointerInfo().getLocation();
+        point.setLocation(point.getX() - 300, point.getY() - 300);
+        window.setLocation(point);
         Dimension size = new Dimension();
-        size.setSize(400, 400);
+        size.setSize(600, 600);
         window.setMinimumSize(size);
         window.setMaximumSize(size);
-        window.setSize(800, 800);
+        window.setSize(600, 600);
+        window.setOpacity(0.9f);
         viewBar(project, window);
     }
 
