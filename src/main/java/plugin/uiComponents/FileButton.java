@@ -6,14 +6,16 @@ import javax.swing.*;
 
 public class FileButton extends JButton {
     PinButtonStatus status;
-    private double fromAngle;
-    private double toAngle;
+    private double locX;
+    private double locY;
     private VirtualFile virtualFile;
+    private CloseButton closeButton;
 
-    public FileButton(VirtualFile virtualFile, double fromAngle, double toAngle) {
+    public FileButton(VirtualFile virtualFile, double x, double y) {
         this.virtualFile = virtualFile;
-        this.fromAngle = fromAngle;
-        this.toAngle = toAngle;
+        this.locX = x;
+        this.locY = y;
+        this.closeButton = closeButton;
         status = PinButtonStatus.UNPINNED;
     }
 
@@ -25,19 +27,27 @@ public class FileButton extends JButton {
         this.virtualFile = virtualFile;
     }
 
-    public double getFromAngle() {
-        return fromAngle;
+    public double getLocX() {
+        return locX;
     }
 
-    public void setFromAngle(double fromAngle) {
-        this.fromAngle = fromAngle;
+    public void setLocX(double locX) {
+        this.locX = locX;
     }
 
-    public double getToAngle() {
-        return toAngle;
+    public double getLocY() {
+        return locY;
     }
 
-    public void setToAngle(double toAngle) {
-        this.toAngle = toAngle;
+    public void setLocY(double locY) {
+        this.locY = locY;
+    }
+
+    public CloseButton getCloseButton() {
+        return closeButton;
+    }
+
+    public void setCloseButton(CloseButton closeButton) {
+        this.closeButton = closeButton;
     }
 }

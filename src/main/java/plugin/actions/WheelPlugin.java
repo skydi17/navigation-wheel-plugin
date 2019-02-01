@@ -1,5 +1,7 @@
 package plugin.actions;
 
+import com.intellij.codeInsight.daemon.impl.DaemonCodeAnalyzerImpl;
+import com.intellij.codeInspection.BaseJavaLocalInspectionTool;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
@@ -7,8 +9,12 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.ComponentPopupBuilder;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.WindowManager;
+import com.intellij.testFramework.HighlightTestInfo;
+import com.intellij.testFramework.fixtures.CodeInsightTestFixture;
+import com.intellij.testFramework.fixtures.impl.CodeInsightTestFixtureImpl;
 import com.intellij.ui.awt.RelativePoint;
 import plugin.listener.CloseButtonListener;
 import plugin.listener.UserClicksListener;
@@ -21,6 +27,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Set;
 
 public class WheelPlugin extends AnAction {
     public WheelPlugin() {
@@ -68,13 +75,14 @@ public class WheelPlugin extends AnAction {
 
         //window.getGraphics().drawOval(x, y, w, w);
         for (int i = 0; i < files.length; i++) {
-            FileButton file = new FileButton(files[i], x + w/2 + w/2*Math.cos(l), y + w/2 + w/2*Math.sin(l));
+            FileButton file = new FileButton(files[i], x + w/2 + w/2*Math.cos(l - Math.PI/files.length), y + w/2 + w/2*Math.sin(l - Math.PI/files.length));
             file.setText(files[i].getName());
             file.setBounds((int)(x + w/2 + w/2*Math.cos(l - Math.PI/files.length) - 50),
                     (int) (y + w/2 + w/2*Math.sin(l - Math.PI/files.length) + 10), 125, 25);
             file.setEnabled(true);
             file.setVisible(true);
             file.setFocusable(Boolean.FALSE);
+
             file.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -101,6 +109,7 @@ public class WheelPlugin extends AnAction {
                 }
             });
             closeButton.addActionListener(closeButtonListener);
+            file.setCloseButton(closeButton);
             window.add(closeButton);
             //g.drawLine(x + w/2, y + w/2,
             //        (int)(x + w/2 + w/2*Math.cos(l)), (int) (y + w/2 + w/2*Math.sin(l)));
