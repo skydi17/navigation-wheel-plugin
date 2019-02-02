@@ -1,13 +1,10 @@
 package plugin.listener;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import plugin.actions.WheelPlugin;
-import plugin.uiComponents.CloseButton;
-import plugin.uiComponents.FileButton;
+import plugin.ui.CloseButton;
+import plugin.ui.FileButton;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.applet.*;
 import java.util.ArrayList;

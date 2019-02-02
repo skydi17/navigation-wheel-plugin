@@ -10,17 +10,8 @@
     </extensions>
 
     <actions>
-        <action id="Myplugin.Textboxes" class="plugin.actions.WheelPlugin" text="Open" description="Open wheel plugin">
+        <action id="OpenWheel" class="plugin.action.OpenWheelPlugin" text="Open" description="Open wheel plugin">
             <keyboard-shortcut first-keystroke="alt C" keymap="$default"/>
-        </action>
-        <action id="closeFile" class="plugin.actions.CloseFile" text="Close" description="Close file in wheel plugin">
-
-        </action>
-        <action id="pinFile" class="plugin.actions.PinFile" text="Pin" description="Pin file in wheel plugin">
-
-        </action>
-        <action id="openFile" class="plugin.actions.OpenFile" text="Open" description="Open file in IDE">
-
         </action>
     </actions>
 
