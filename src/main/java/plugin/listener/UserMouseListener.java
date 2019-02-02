@@ -1,6 +1,10 @@
 package plugin.listener;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.fileEditor.impl.FileEditorManagerImpl;
+import com.intellij.openapi.project.Project;
+import com.intellij.ui.docking.DockManager;
+import com.intellij.ui.docking.impl.DockManagerImpl;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 
@@ -9,22 +13,27 @@ import java.awt.event.*;
 import java.applet.*;
 import java.util.ArrayList;
 
-public class UserClicksListener extends Applet implements MouseListener, MouseMotionListener {
+public class UserMouseListener extends Applet implements MouseListener, MouseMotionListener {
 
     ArrayList<FileButton> fileButtons;
     FileEditorManager fileEditorManager;
     FileButton lastSelected;
+    Project project;
+    JFrame wheel;
     final int X, Y, INNNER_R, OUTER_R, CENTER_X, CENTER_Y;
+    private int currentX, currentY;
+    private boolean dragging = false;
 
-    public UserClicksListener(int x, int y, int innerR, int outerR, ArrayList<FileButton> fileButtons, FileEditorManager fileEditorManager) {
+    public UserMouseListener(int x, int y, int innerR, int outerR, Project project, JFrame wheel) {
         this.X = x;
         this.Y = y;
         this.INNNER_R = innerR;
         this.OUTER_R = outerR;
         this.CENTER_X = X + OUTER_R / 2;
         this.CENTER_Y = Y + OUTER_R / 2;
-        this.fileButtons = fileButtons;
-        this.fileEditorManager = fileEditorManager;
+        this.project = project;
+        this.wheel = wheel;
+        this.fileEditorManager = FileEditorManager.getInstance(project);
     }
 
     public void mouseClicked(MouseEvent me) {
@@ -42,37 +51,49 @@ public class UserClicksListener extends Applet implements MouseListener, MouseMo
             }
             fileEditorManager.openFile(closestButton.getVirtualFile(), true);
         }
-        ((JFrame) me.getSource()).dispose();
+        wheel.dispose();
     }
 
-    // обработать событие наведения курсора мыши
     public void mouseEntered(MouseEvent me) {
-        mouseMovedOrDragged(me);
+
     }
 
-    // обработать событие отведения курсора мыши
     public void mouseExited(MouseEvent me) {
 
     }
 
-    // обработать событие нажатия кнопки мыши
     public void mousePressed(MouseEvent me) {
-
+        currentX = me.getX();
+        currentY = me.getY();
+        dragging = true;
     }
 
-    // обработать событие отпускания кнопки мыши
     public void mouseReleased(MouseEvent me) {
-
+        dragging = false;
+        if (currentX == me.getX() && currentY == me.getY()) {
+            if (lastSelected != null) {
+                fileEditorManager.openFile(lastSelected.getVirtualFile(), true);
+            }
+            wheel.dispose();
+            return;
+        }
+        double l = countDistanceFromMouseCursor(me, CENTER_X, CENTER_Y);
+        if (l > OUTER_R / 2) {
+            if (lastSelected != null) {
+                ((DockManagerImpl)DockManager.getInstance(project)).createNewDockContainerFor(lastSelected.getVirtualFile(), (FileEditorManagerImpl)fileEditorManager);
+            }
+            wheel.dispose();
+        }
     }
 
-    // обработать событие перетаскивания курсора мыши
     public void mouseDragged(MouseEvent me) {
-        mouseMovedOrDragged(me);
+
     }
 
-    // обработать событие перемещения мыши
     public void mouseMoved(MouseEvent me) {
-        mouseMovedOrDragged(me);
+        if (!dragging && !(me.getSource() instanceof JButton)) {
+            animateFiles(me);
+        }
     }
 
     private double countDistanceFromMouseCursor(MouseEvent me, double toX, double toY) {
@@ -97,7 +118,7 @@ public class UserClicksListener extends Applet implements MouseListener, MouseMo
                 closeButton.getWidth() - 50, closeButton.getHeight() - 50);
     }
 
-    private void mouseMovedOrDragged(MouseEvent me) {
+    private void animateFiles(MouseEvent me) {
         double l = countDistanceFromMouseCursor(me, CENTER_X, CENTER_Y);
         if (l > INNNER_R && l < OUTER_R) {
             double min = Double.MAX_VALUE;
@@ -123,5 +144,13 @@ public class UserClicksListener extends Applet implements MouseListener, MouseMo
                 lastSelected = null;
             }
         }
+    }
+
+    public ArrayList<FileButton> getFileButtons() {
+        return fileButtons;
+    }
+
+    public void setFileButtons(ArrayList<FileButton> fileButtons) {
+        this.fileButtons = fileButtons;
     }
 }

@@ -67,14 +67,6 @@ public class FileButton extends JButton {
         file.setEnabled(true);
         file.setVisible(true);
         file.setFocusable(Boolean.FALSE);
-
-        file.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                manager.openFile(file.getVirtualFile(), Boolean.TRUE);
-                wheel.dispose();
-            }
-        });
         return file;
     }
 }

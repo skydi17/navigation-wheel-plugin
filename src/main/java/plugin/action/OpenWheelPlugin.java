@@ -5,7 +5,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
-import plugin.listener.UserClicksListener;
+import plugin.listener.UserMouseListener;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
@@ -38,11 +38,14 @@ public class OpenWheelPlugin extends AnAction {
         VirtualFile files[] = manager.getOpenFiles();
 
         ArrayList<FileButton> fileButtons = new ArrayList<>(files.length);
+        UserMouseListener userMouseListener = new UserMouseListener(X, Y, INNER_R, R, project, wheel);
 
         double step = 0;
         for (int i = 0; i < files.length; i++) {
             FileButton file = new FileButton(files[i]);
             file.createFileButton(step, files.length, manager, wheel);
+            file.addMouseListener(userMouseListener);
+            file.addMouseMotionListener(userMouseListener);
             wheel.add(file);
             fileButtons.add(file);
 
@@ -52,13 +55,13 @@ public class OpenWheelPlugin extends AnAction {
             wheel.add(closeButton);
             step = step + 2 * Math.PI/files.length;
         }
+        userMouseListener.setFileButtons(fileButtons);
+
         wheel.setSize(WHEEL_SIZE, WHEEL_SIZE);
         wheel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         wheel.setLayout(null);
         wheel.setVisible(true);
-
-        UserClicksListener userClicksListener = new UserClicksListener(X, Y, INNER_R, R, fileButtons, manager);
-        wheel.addMouseListener(userClicksListener);
-        wheel.addMouseMotionListener(userClicksListener);
+        wheel.addMouseListener(userMouseListener);
+        wheel.addMouseMotionListener(userMouseListener);
     }
 }
