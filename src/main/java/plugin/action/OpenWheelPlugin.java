@@ -3,6 +3,7 @@ package plugin.action;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import plugin.listener.UserClicksListener;
 import plugin.ui.CloseButton;
@@ -23,8 +24,13 @@ public class OpenWheelPlugin extends AnAction {
 
     public void actionPerformed(AnActionEvent event) {
         Project project = event.getProject();
-        NavigationWheel wheel = new NavigationWheel();
-        viewBar(project, wheel.createWheel());
+        FileEditorManager manager = FileEditorManager.getInstance(project);
+        if (manager.getOpenFiles().length != 0) {
+            NavigationWheel wheel = new NavigationWheel();
+            viewBar(project, wheel.createWheel());
+        } else {
+            Messages.showMessageDialog(project, "There aren't any opened files for showing on Navigation Wheel.", "Information", Messages.getInformationIcon());
+        }
     }
 
     public static void viewBar(Project project, JFrame wheel) {
