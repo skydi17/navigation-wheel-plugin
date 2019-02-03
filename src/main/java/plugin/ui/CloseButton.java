@@ -3,6 +3,7 @@ package plugin.ui;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import plugin.action.OpenWheelPlugin;
+import plugin.listener.CloseButtonListener;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -38,15 +39,8 @@ public class CloseButton extends JButton {
         closeButton.setVisible(true);
         closeButton.setText("x");
         closeButton.setFocusable(Boolean.FALSE);
-        closeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                manager.closeFile(closeButton.getFileButton().getVirtualFile());
-                wheel.getContentPane().removeAll();
-                wheel.getContentPane().repaint();
-                OpenWheelPlugin.viewBar(project, wheel);
-            }
-        });
+        closeButton.addActionListener(new CloseButtonListener(project,
+                wheel, closeButton.getFileButton().getVirtualFile()));
         return closeButton;
     }
 }
