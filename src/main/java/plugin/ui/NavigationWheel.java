@@ -20,6 +20,9 @@ public class NavigationWheel extends JComponent {
         wheel.setMaximumSize(size);
         wheel.setSize(WHEEL_SIZE, WHEEL_SIZE);
         wheel.setOpacity(0.9f);
+        wheel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        wheel.setLayout(null);
+        wheel.setVisible(true);
         return wheel;
     }
 }

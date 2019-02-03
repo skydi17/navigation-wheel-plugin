@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 public class OpenWheelPlugin extends AnAction {
-    private final static int WHEEL_SIZE = 600, INNER_R = 50;
+    private final static int INNER_R = 50;
     private final static int X = 67, Y = 60, R = 400;
 
 
@@ -56,11 +56,6 @@ public class OpenWheelPlugin extends AnAction {
             step = step + 2 * Math.PI/files.length;
         }
         userMouseListener.setFileButtons(fileButtons);
-
-        wheel.setSize(WHEEL_SIZE, WHEEL_SIZE);
-        wheel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        wheel.setLayout(null);
-        wheel.setVisible(true);
         wheel.addMouseListener(userMouseListener);
         wheel.addMouseMotionListener(userMouseListener);
     }
