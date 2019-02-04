@@ -24,12 +24,14 @@ public class OpenWheelPlugin extends AnAction {
 
     public void actionPerformed(AnActionEvent event) {
         Project project = event.getProject();
-        FileEditorManager manager = FileEditorManager.getInstance(project);
-        if (manager.getOpenFiles().length != 0) {
-            NavigationWheel wheel = new NavigationWheel();
-            viewBar(project, wheel.createWheel());
-        } else {
-            Messages.showMessageDialog(project, "There aren't any opened files for showing on Navigation Wheel.", "Information", Messages.getInformationIcon());
+        if (project != null) {
+            FileEditorManager manager = FileEditorManager.getInstance(project);
+            if (manager.getOpenFiles().length > 1) {
+                NavigationWheel wheel = new NavigationWheel();
+                viewBar(project, wheel.createWheel());
+            } else {
+                Messages.showMessageDialog(project, "Not enough files opened.", "Information", Messages.getInformationIcon());
+            }
         }
     }
 

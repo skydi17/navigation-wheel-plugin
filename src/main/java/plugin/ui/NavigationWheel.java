@@ -1,5 +1,7 @@
 package plugin.ui;
 
+import plugin.listener.WheelFocusListener;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,7 +22,8 @@ public class NavigationWheel extends JComponent {
         wheel.setMaximumSize(size);
         wheel.setSize(WHEEL_SIZE, WHEEL_SIZE);
         wheel.setOpacity(0.9f);
-        wheel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        wheel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        wheel.addFocusListener(new WheelFocusListener(wheel));
         wheel.setLayout(null);
         wheel.setVisible(true);
         return wheel;
