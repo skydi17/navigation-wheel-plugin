@@ -2,12 +2,9 @@ package plugin.ui;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
-import plugin.action.OpenWheelPlugin;
 import plugin.listener.CloseButtonListener;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class CloseButton extends JButton {
 

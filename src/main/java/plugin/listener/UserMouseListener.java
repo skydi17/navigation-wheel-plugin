@@ -96,8 +96,15 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
 
     public void mouseMoved(MouseEvent me) {
         if (!dragging && !(me.getSource() instanceof JButton)) {
-            animateFiles(me);
+            Thread thread = new Thread(){
+                public void run(){
+                    animateFiles(me);
+                }
+            };
+
+            thread.start();
         }
+
     }
 
     private double countLength (double fromX, double fromY, double toX, double toY) {
@@ -128,7 +135,9 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
             double invLength = -1/length*ANIMATION_SHIFT;
             button.setLocation( button.getX() - (int)((double)(CENTER_X - button.getX())*invLength),
                     button.getY() - (int)((double)(CENTER_Y - button.getY())*invLength));
+            button.repaint();
             button.getCloseButton().setLocation(button.getX() + button.getWidth(), button.getY());
+            button.getCloseButton().repaint();
             try {
                 Thread.sleep(ANIMATION_PAUSE);
             } catch (InterruptedException e) {
@@ -143,7 +152,9 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
             double invLength = 1/length*ANIMATION_SHIFT;
             button.setLocation( button.getX() - (int)((double)(CENTER_X - button.getX())*invLength),
                     button.getY() - (int)((double)(CENTER_Y - button.getY())*invLength));
+            button.repaint();
             button.getCloseButton().setLocation(button.getX() + button.getWidth(), button.getY());
+            button.getCloseButton().repaint();
             try {
                 Thread.sleep(ANIMATION_PAUSE);
             } catch (InterruptedException e) {

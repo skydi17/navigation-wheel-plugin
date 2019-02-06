@@ -1,9 +1,9 @@
 package plugin.ui;
 
-import plugin.listener.WheelFocusListener;
-
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class NavigationWheel extends JComponent {
     private final static int WHEEL_SIZE = 600;
@@ -11,21 +11,34 @@ public class NavigationWheel extends JComponent {
     public JFrame createWheel() {
         JFrame wheel = new JFrame();
         wheel.setUndecorated(true);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+        }
+        wheel.setBackground(new Color(0,0,0,0));
         wheel.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         Point point = MouseInfo.getPointerInfo().getLocation();
-        point.setLocation(point.getX() - WHEEL_SIZE/2,
-                point.getY() - WHEEL_SIZE/2);
-        wheel.setLocation(point);
-        Dimension size = new Dimension();
-        size.setSize(WHEEL_SIZE, WHEEL_SIZE);
-        wheel.setMinimumSize(size);
-        wheel.setMaximumSize(size);
-        wheel.setSize(WHEEL_SIZE, WHEEL_SIZE);
-        wheel.setOpacity(0.9f);
-        wheel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        wheel.addFocusListener(new WheelFocusListener(wheel));
         wheel.setLayout(null);
-        wheel.setVisible(true);
+        wheel.setBounds((int)(point.getX() - WHEEL_SIZE/2),
+                (int)(point.getY() - WHEEL_SIZE/2), WHEEL_SIZE, WHEEL_SIZE);
         return wheel;
+    }
+
+    public void setBackground(JFrame wheel) {
+        BufferedImage image = null;
+        try
+        {
+            image = ImageIO.read(getClass().getResource("/images/wheel_background.png"));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        wheel.setContentPane(new TranslucentPane());
+        JLabel background = new JLabel(new ImageIcon(image));
+        background.setBounds(background.getX(), background.getY(),
+                600, 600);
+        wheel.add(background);
     }
 }

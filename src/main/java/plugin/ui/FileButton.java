@@ -4,8 +4,6 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class FileButton extends JButton {
 
@@ -17,10 +15,12 @@ public class FileButton extends JButton {
     private double locY;
     private VirtualFile virtualFile;
     private CloseButton closeButton;
+    private boolean hasErrors;
 
     public FileButton(VirtualFile virtualFile) {
         this.virtualFile = virtualFile;
         status = PinButtonStatus.UNPINNED;
+        hasErrors = false;
     }
 
     public VirtualFile getVirtualFile() {
@@ -53,6 +53,14 @@ public class FileButton extends JButton {
 
     public void setCloseButton(CloseButton closeButton) {
         this.closeButton = closeButton;
+    }
+
+    public boolean isHasErrors() {
+        return hasErrors;
+    }
+
+    public void setHasErrors(boolean hasErrors) {
+        this.hasErrors = hasErrors;
     }
 
     public FileButton createFileButton( double step,
