@@ -96,13 +96,13 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
 
     public void mouseMoved(MouseEvent me) {
         if (!dragging && !(me.getSource() instanceof JButton)) {
-            Thread thread = new Thread(){
-                public void run(){
+            /*Thread thread = new Thread(){
+                public void run(){ */
                     animateFiles(me);
-                }
+            /*    }
             };
 
-            thread.start();
+            thread.start(); */
         }
 
     }

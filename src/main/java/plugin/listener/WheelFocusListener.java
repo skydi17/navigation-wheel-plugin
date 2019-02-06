@@ -8,7 +8,7 @@ public class WheelFocusListener implements FocusListener {
 
     JFrame wheel;
 
-    public WheelFocusListener(JFrame wheel) {
+    public  WheelFocusListener(JFrame wheel) {
         this.wheel = wheel;
     }
 

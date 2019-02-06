@@ -28,7 +28,7 @@ public class NavigationWheel extends JComponent {
         BufferedImage image = null;
         try
         {
-            image = ImageIO.read(getClass().getResource("/images/wheel_background.png"));
+            image = ImageIO.read(getClass().getResource("/images/wheel_background3.png"));
         }
         catch (Exception e)
         {

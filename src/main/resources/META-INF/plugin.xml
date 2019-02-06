@@ -11,7 +11,10 @@
 
     <actions>
         <action id="OpenWheel" class="plugin.action.OpenWheelPlugin" text="Open" description="Open wheel plugin">
-            <keyboard-shortcut first-keystroke="alt C" keymap="$default"/>
+            <keyboard-shortcut first-keystroke="alt C" second-keystroke="X" keymap="$default"/>
+        </action>
+        <action id="OpenWheelWithCodeAnalysis" class="plugin.action.OpenWheelWithCodeAnalysis" text="Open" description="Open wheel plugin with code analysis">
+            <keyboard-shortcut first-keystroke="alt C" second-keystroke="V" keymap="$default"/>
         </action>
     </actions>
 

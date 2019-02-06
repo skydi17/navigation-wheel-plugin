@@ -22,12 +22,17 @@ import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
     private final static int INNER_R = 50;
-    private final static int X = 67, Y = 60, R = 400;
+    private final static int X = 80, Y = 76, R = 400;
     private static NavigationWheel navigationWheel;
+    private static boolean needCodeAnalysis = false;
 
 
     public OpenWheelPlugin() {
         super("Open");
+    }
+
+    public OpenWheelPlugin(Boolean needCodeAnalysis) {
+        this.needCodeAnalysis = needCodeAnalysis;
     }
 
     public void actionPerformed(AnActionEvent event) {
@@ -66,7 +71,10 @@ public class OpenWheelPlugin extends AnAction {
             buttonsPane.add(closeButton);
             step = step + 2 * Math.PI/files.length;
         }
-        staticCodeAnalysis(manager, fileButtons);
+        if (needCodeAnalysis) {
+            staticCodeAnalysis(manager, fileButtons);
+            needCodeAnalysis = false;
+        }
         wheel.setLayeredPane(buttonsPane);
         userMouseListener.setFileButtons(fileButtons);
         wheel.addMouseListener(userMouseListener);
