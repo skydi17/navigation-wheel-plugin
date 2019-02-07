@@ -20,19 +20,17 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     FileButton lastSelected;
     Project project;
     JFrame wheel;
-    final int X, Y, INNNER_R, OUTER_R, CENTER_X, CENTER_Y;
+    final int INNNER_R, OUTER_R, CENTER_X, CENTER_Y;
     final int CLICK_ACCURACY_DELTA = 20, CHOSEN_BUTTON = 50;
     final int ANIMATION_PAUSE = 10, ANIMATION_LOOP = 5, ANIMATION_SHIFT = 5;
     private int currentX, currentY;
     private boolean dragging = false;
 
     public UserMouseListener(int x, int y, int innerR, int outerR, Project project, JFrame wheel) {
-        this.X = x;
-        this.Y = y;
         this.INNNER_R = innerR;
         this.OUTER_R = outerR;
-        this.CENTER_X = X + OUTER_R / 2;
-        this.CENTER_Y = Y + OUTER_R / 2;
+        this.CENTER_X = x + OUTER_R / 2;
+        this.CENTER_Y = y + OUTER_R / 2;
         this.project = project;
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
@@ -170,8 +168,8 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
             FileButton closestButton = fileButtons.get(0);
             for (FileButton fileButton : fileButtons) {
                 l = countLength(me.getX(), me.getY(),
-                        fileButton.getLocX() + fileButton.getWidth()/2,
-                        fileButton.getLocY() + fileButton.getHeight()/2);
+                        fileButton.getX() + fileButton.getWidth()/2,
+                        fileButton.getY() + fileButton.getHeight()/2);
                 if (l < min) {
                     closestButton = fileButton;
                     min = l;

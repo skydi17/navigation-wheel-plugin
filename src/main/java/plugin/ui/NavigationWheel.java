@@ -1,5 +1,7 @@
 package plugin.ui;
 
+import com.intellij.util.ui.UIUtil;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -11,12 +13,9 @@ public class NavigationWheel extends JComponent {
     public JFrame createWheel() {
         JFrame wheel = new JFrame();
         wheel.setUndecorated(true);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-        }
         wheel.setBackground(new Color(0,0,0,0));
         wheel.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
+        wheel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         Point point = MouseInfo.getPointerInfo().getLocation();
         wheel.setLayout(null);
         wheel.setBounds((int)(point.getX() - WHEEL_SIZE/2),
@@ -28,7 +27,11 @@ public class NavigationWheel extends JComponent {
         BufferedImage image = null;
         try
         {
-            image = ImageIO.read(getClass().getResource("/images/wheel_background3.png"));
+            if (UIUtil.isUnderDarcula()) {
+                image = ImageIO.read(getClass().getResource("/images/wheel_background3.png"));
+            } else {
+                image = ImageIO.read(getClass().getResource("/images/wheel_background2.png"));
+            }
         }
         catch (Exception e)
         {

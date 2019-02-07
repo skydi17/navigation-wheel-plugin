@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
-    private final static int INNER_R = 50;
-    private final static int X = 80, Y = 76, R = 400;
+    private final static int INNER_R = 100;
+    private final static int X = 80, Y = 130, R = 300;
     private static NavigationWheel navigationWheel;
     private static boolean needCodeAnalysis = false;
 
@@ -40,12 +40,16 @@ public class OpenWheelPlugin extends AnAction {
         if (project != null) {
             FileEditorManager manager = FileEditorManager.getInstance(project);
             if (manager.getOpenFiles().length > 1) {
-                navigationWheel = new NavigationWheel();
-                viewBar(project, navigationWheel.createWheel());
+                createWheel(project);
             } else {
                 Messages.showMessageDialog(project, "Not enough files opened.", "Information", Messages.getInformationIcon());
             }
         }
+    }
+
+    public static void createWheel(Project project) {
+        navigationWheel = new NavigationWheel();
+        viewBar(project, navigationWheel.createWheel());
     }
 
     public static void viewBar(Project project, JFrame wheel) {
@@ -54,28 +58,26 @@ public class OpenWheelPlugin extends AnAction {
 
         ArrayList<FileButton> fileButtons = new ArrayList<>(files.length);
         UserMouseListener userMouseListener = new UserMouseListener(X, Y, INNER_R, R, project, wheel);
-        JLayeredPane buttonsPane = new JLayeredPane();
 
         double step = 0;
         for (int i = 0; i < files.length; i++) {
             FileButton file = new FileButton(files[i]);
-            file.createFileButton(step, files.length, manager, wheel);
+            file.createFileButton(step, files.length, R, X, Y);
             file.addMouseListener(userMouseListener);
             file.addMouseMotionListener(userMouseListener);
-            buttonsPane.add(file);
+            wheel.getLayeredPane().add(file);
             fileButtons.add(file);
 
             CloseButton closeButton = new CloseButton(file);
-            closeButton.createCloseButton(step, files.length, manager, wheel, project);
+            closeButton.createCloseButton(wheel, project);
             file.setCloseButton(closeButton);
-            buttonsPane.add(closeButton);
+            wheel.getLayeredPane().add(closeButton);
             step = step + 2 * Math.PI/files.length;
         }
         if (needCodeAnalysis) {
             staticCodeAnalysis(manager, fileButtons);
             needCodeAnalysis = false;
         }
-        wheel.setLayeredPane(buttonsPane);
         userMouseListener.setFileButtons(fileButtons);
         wheel.addMouseListener(userMouseListener);
         wheel.addMouseMotionListener(userMouseListener);

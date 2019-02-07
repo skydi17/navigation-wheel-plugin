@@ -6,7 +6,7 @@ import java.awt.event.FocusListener;
 
 public class WheelFocusListener implements FocusListener {
 
-    JFrame wheel;
+    private JFrame wheel;
 
     public  WheelFocusListener(JFrame wheel) {
         this.wheel = wheel;
@@ -17,6 +17,6 @@ public class WheelFocusListener implements FocusListener {
     }
 
     public void focusLost(FocusEvent fe){
-        wheel.dispose();
+            wheel.dispose();
     }
 }

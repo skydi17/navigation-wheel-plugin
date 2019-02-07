@@ -1,6 +1,5 @@
 package plugin.ui;
 
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import plugin.listener.CloseButtonListener;
 
@@ -8,7 +7,7 @@ import javax.swing.*;
 
 public class CloseButton extends JButton {
 
-    private final int CLOSE_BUTTON_WEIGHT = 20;
+    private final int CLOSE_BUTTON_WEIGHT = 25;
     private final int CLOSE_BUTTON_HEIGHT = 25;
     private FileButton fileButton;
 
@@ -24,10 +23,7 @@ public class CloseButton extends JButton {
         this.fileButton = fileButton;
     }
 
-    public CloseButton createCloseButton(double step,
-                                         int filesLength,
-                                         final FileEditorManager manager,
-                                         final JFrame wheel,
+    public CloseButton createCloseButton(final JFrame wheel,
                                          Project project) {
         CloseButton closeButton = this;
         closeButton.setBounds(fileButton.getX() + fileButton.getWidth(), fileButton.getY(),
