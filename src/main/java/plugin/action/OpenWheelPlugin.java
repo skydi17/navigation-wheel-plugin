@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.CodeSmellDetector;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.ui.UIUtil;
 import plugin.listener.UserMouseListener;
 import plugin.listener.WheelFocusListener;
 import plugin.ui.CloseButton;
@@ -21,8 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
-    private final static int INNER_R = 100;
-    private final static int X = 80, Y = 130, R = 300;
+    private final static int INNER_R = 80;
+    private final static int X = 10, Y = 70, R = 430;
     private static NavigationWheel navigationWheel;
     private static boolean needCodeAnalysis = false;
 
@@ -40,19 +41,19 @@ public class OpenWheelPlugin extends AnAction {
         if (project != null) {
             FileEditorManager manager = FileEditorManager.getInstance(project);
             if (manager.getOpenFiles().length > 1) {
-                createWheel(project);
+                createWheel(project, null, -1, -1);
             } else {
                 Messages.showMessageDialog(project, "Not enough files opened.", "Information", Messages.getInformationIcon());
             }
         }
     }
 
-    public static void createWheel(Project project) {
+    public static void createWheel(Project project, VirtualFile closedFile, int x, int y) {
         navigationWheel = new NavigationWheel();
-        viewBar(project, navigationWheel.createWheel());
+        viewBar(project, navigationWheel.createWheel(x, y), closedFile);
     }
 
-    public static void viewBar(Project project, JFrame wheel) {
+    public static void viewBar(Project project, JFrame wheel, VirtualFile closedFile) {
         FileEditorManager manager = FileEditorManager.getInstance(project);
         VirtualFile files[] = manager.getOpenFiles();
 
@@ -61,21 +62,25 @@ public class OpenWheelPlugin extends AnAction {
 
         double step = 0;
         for (int i = 0; i < files.length; i++) {
-            FileButton file = new FileButton(files[i]);
-            file.createFileButton(step, files.length, R, X, Y);
-            file.addMouseListener(userMouseListener);
-            file.addMouseMotionListener(userMouseListener);
-            wheel.getLayeredPane().add(file);
-            fileButtons.add(file);
+            if (files[i] != closedFile) {
+                FileButton file = new FileButton(files[i]);
+                file.createFileButton(step, files.length, R, X, Y);
+                file.addMouseListener(userMouseListener);
+                file.addMouseMotionListener(userMouseListener);
+                wheel.getLayeredPane().add(file);
+                fileButtons.add(file);
 
-            CloseButton closeButton = new CloseButton(file);
-            closeButton.createCloseButton(wheel, project);
-            file.setCloseButton(closeButton);
-            wheel.getLayeredPane().add(closeButton);
+                CloseButton closeButton = new CloseButton(file);
+                closeButton.createCloseButton(wheel, project);
+                file.setCloseButton(closeButton);
+                wheel.getLayeredPane().add(closeButton);
+            } else {
+                manager.closeFile(closedFile);
+            }
             step = step + 2 * Math.PI/files.length;
         }
         if (needCodeAnalysis) {
-            staticCodeAnalysis(manager, fileButtons);
+            runCodeAnalysis(manager, fileButtons);
             needCodeAnalysis = false;
         }
         userMouseListener.setFileButtons(fileButtons);
@@ -86,13 +91,19 @@ public class OpenWheelPlugin extends AnAction {
         wheel.setVisible(true);
     }
 
-    private static void staticCodeAnalysis(FileEditorManager manager, ArrayList<FileButton> fileButtons) {
+    private static void runCodeAnalysis(FileEditorManager manager, ArrayList<FileButton> fileButtons) {
         for (FileButton fileButton : fileButtons) {
             List<CodeSmellInfo> codeSmellInfos = CodeSmellDetector.getInstance(manager.getProject()).findCodeSmells(Arrays.asList(fileButton.getVirtualFile()));
             for (CodeSmellInfo codeSmellInfo : codeSmellInfos) {
                 if (codeSmellInfo.getSeverity() == HighlightSeverity.ERROR) {
                     fileButton.setHasErrors(true);
-                    fileButton.setBackground(Color.PINK);
+                    if (UIUtil.isUnderDarcula()) {
+                        fileButton.setBackground(Color.LIGHT_GRAY);
+                        fileButton.getCloseButton().setBackground(Color.LIGHT_GRAY);
+                    } else {
+                        fileButton.setBackground(Color.PINK);
+                        fileButton.getCloseButton().setBackground(Color.PINK);
+                    }
                     fileButton.repaint();
                 }
             }

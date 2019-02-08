@@ -8,14 +8,12 @@ public class FileButton extends JButton {
 
     private final int FILE_BUTTON_WEIGHT = 125;
     private final int FILE_BUTTON_HEIGHT = 25;
-    PinButtonStatus status;
     private VirtualFile virtualFile;
     private CloseButton closeButton;
     private boolean hasErrors;
 
     public FileButton(VirtualFile virtualFile) {
         this.virtualFile = virtualFile;
-        status = PinButtonStatus.UNPINNED;
         hasErrors = false;
     }
 

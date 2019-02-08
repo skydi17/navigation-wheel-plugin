@@ -25,11 +25,11 @@ public class CloseButtonListener extends Applet implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        fileEditorManager.closeFile(virtualFile);
+        //fileEditorManager.closeFile(virtualFile);
         wheel.dispose();
         if (fileEditorManager.getOpenFiles().length <= 1) {
             return;
         }
-        OpenWheelPlugin.createWheel(project);
+        OpenWheelPlugin.createWheel(project, virtualFile, wheel.getX(), wheel.getY());
     }
 }
