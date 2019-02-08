@@ -5,6 +5,7 @@ import com.intellij.openapi.fileEditor.impl.FileEditorManagerImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.docking.DockManager;
 import com.intellij.ui.docking.impl.DockManagerImpl;
+import com.intellij.util.ui.UIUtil;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 
@@ -21,12 +22,19 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     Project project;
     JFrame wheel;
     final int INNNER_R, OUTER_R, CENTER_X, CENTER_Y;
-    final int CLICK_ACCURACY_DELTA = 20, CHOSEN_BUTTON = 50;
+    final int CLICK_ACCURACY_DELTA, CHOSEN_BUTTON;
     final int ANIMATION_PAUSE = 10, ANIMATION_LOOP = 5, ANIMATION_SHIFT = 5;
     private int currentX, currentY;
     private boolean dragging = false;
 
     public UserMouseListener(int x, int y, int innerR, int outerR, Project project, JFrame wheel) {
+        if (UIUtil.isRetina()) {
+            CLICK_ACCURACY_DELTA = 40;
+            CHOSEN_BUTTON = 100;
+        } else {
+            CLICK_ACCURACY_DELTA = 20;
+            CHOSEN_BUTTON = 50;
+        }
         this.INNNER_R = innerR;
         this.OUTER_R = outerR;
         this.CENTER_X = x + OUTER_R / 2;

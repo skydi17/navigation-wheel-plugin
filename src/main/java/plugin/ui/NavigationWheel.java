@@ -8,7 +8,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class NavigationWheel extends JComponent {
-    private final static int WHEEL_SIZE = 600;
+    private final int WHEEL_SIZE;
+
+    public NavigationWheel() {
+        if (UIUtil.isRetina()) {
+            WHEEL_SIZE = 1200;
+        } else {
+            WHEEL_SIZE = 600;
+        }
+    }
 
     public JFrame createWheel(int x, int y) {
         JFrame wheel = new JFrame();
@@ -31,10 +39,18 @@ public class NavigationWheel extends JComponent {
         BufferedImage image = null;
         try
         {
-            if (UIUtil.isUnderDarcula()) {
-                image = ImageIO.read(getClass().getResource("/images/wheel_background3.png"));
+            if (UIUtil.isRetina()) {
+                if (UIUtil.isUnderDarcula()) {
+                    image = ImageIO.read(getClass().getResource("/images/wheel2x_dark.png"));
+                } else {
+                    image = ImageIO.read(getClass().getResource("/images/wheel2x.png"));
+                }
             } else {
-                image = ImageIO.read(getClass().getResource("/images/wheel_background2.png"));
+                if (UIUtil.isUnderDarcula()) {
+                    image = ImageIO.read(getClass().getResource("/images/wheel_dark.png"));
+                } else {
+                    image = ImageIO.read(getClass().getResource("/images/wheel.png"));
+                }
             }
         }
         catch (Exception e)

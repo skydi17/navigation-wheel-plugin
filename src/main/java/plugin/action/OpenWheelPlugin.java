@@ -22,8 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
-    private final static int INNER_R = 80;
-    private final static int X = 10, Y = 70, R = 430;
+    private static int INNER_R = 80;
+    private static int X = 10, Y = 70, R = 430;
     private static NavigationWheel navigationWheel;
     private static boolean needCodeAnalysis = false;
 
@@ -37,6 +37,12 @@ public class OpenWheelPlugin extends AnAction {
     }
 
     public void actionPerformed(AnActionEvent event) {
+        if (UIUtil.isRetina()) {
+            INNER_R = INNER_R * 2;
+            X = X * 2;
+            Y = Y * 2;
+            R = R * 2;
+        }
         Project project = event.getProject();
         if (project != null) {
             FileEditorManager manager = FileEditorManager.getInstance(project);

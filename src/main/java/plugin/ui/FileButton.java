@@ -1,18 +1,26 @@
 package plugin.ui;
 
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
 
 public class FileButton extends JButton {
 
-    private final int FILE_BUTTON_WEIGHT = 125;
-    private final int FILE_BUTTON_HEIGHT = 25;
+    private final int FILE_BUTTON_WEIGHT;
+    private final int FILE_BUTTON_HEIGHT;
     private VirtualFile virtualFile;
     private CloseButton closeButton;
     private boolean hasErrors;
 
     public FileButton(VirtualFile virtualFile) {
+        if (UIUtil.isRetina()) {
+            FILE_BUTTON_WEIGHT = 250;
+            FILE_BUTTON_HEIGHT = 50;
+        } else {
+            FILE_BUTTON_WEIGHT = 125;
+            FILE_BUTTON_HEIGHT = 25;
+        }
         this.virtualFile = virtualFile;
         hasErrors = false;
     }

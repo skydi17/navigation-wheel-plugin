@@ -1,17 +1,22 @@
 package plugin.ui;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.util.ui.UIUtil;
 import plugin.listener.CloseButtonListener;
 
 import javax.swing.*;
 
 public class CloseButton extends JButton {
 
-    private final int CLOSE_BUTTON_WEIGHT = 25;
-    private final int CLOSE_BUTTON_HEIGHT = 25;
+    private final int CLOSE_BUTTON_SIZE;
     private FileButton fileButton;
 
     public CloseButton(FileButton fileButton) {
+        if (UIUtil.isRetina()) {
+            CLOSE_BUTTON_SIZE = 50;
+        } else {
+            CLOSE_BUTTON_SIZE = 25;
+        }
         this.fileButton = fileButton;
     }
 
@@ -27,7 +32,7 @@ public class CloseButton extends JButton {
                                          Project project) {
         CloseButton closeButton = this;
         closeButton.setBounds(fileButton.getX() + fileButton.getWidth(), fileButton.getY(),
-                CLOSE_BUTTON_WEIGHT, CLOSE_BUTTON_HEIGHT);
+                CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE);
         closeButton.setEnabled(true);
         closeButton.setVisible(true);
         closeButton.setText("x");
