@@ -12,6 +12,8 @@ public class FileButton extends JButton {
     private VirtualFile virtualFile;
     private CloseButton closeButton;
     private boolean hasErrors;
+    private int originalX;
+    private int originalY;
 
     public FileButton(VirtualFile virtualFile) {
         if (UIUtil.isRetina()) {
@@ -49,16 +51,32 @@ public class FileButton extends JButton {
         this.hasErrors = hasErrors;
     }
 
+    public int getOriginalX() {
+        return originalX;
+    }
+
+    public void setOriginalX(int originalX) {
+        this.originalX = originalX;
+    }
+
+    public int getOriginalY() {
+        return originalY;
+    }
+
+    public void setOriginalY(int originalY) {
+        this.originalY = originalY;
+    }
+
     public FileButton createFileButton(double step,
                                        int filesLength,
                                        int R,
                                        int X,
                                        int Y) {
         FileButton file = this;
-        int x = (int) (X + R/2 + R/2*Math.cos(step - Math.PI/filesLength));
-        int y = (int) (Y + R/2 + R/2*Math.sin(step - Math.PI/filesLength));
+        file.setOriginalX((int) (X + R/2 + R/2*Math.cos(step - Math.PI/filesLength)));
+        file.setOriginalY((int) (Y + R/2 + R/2*Math.sin(step - Math.PI/filesLength)));
         file.setText(virtualFile.getName());
-        file.setBounds(x, y, FILE_BUTTON_WEIGHT, FILE_BUTTON_HEIGHT);
+        file.setBounds(file.getOriginalX(), file.getOriginalY(), FILE_BUTTON_WEIGHT, FILE_BUTTON_HEIGHT);
         file.setEnabled(true);
         file.setVisible(true);
         file.setFocusable(Boolean.FALSE);

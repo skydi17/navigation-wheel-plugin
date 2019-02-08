@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
-    private static int INNER_R = 80;
+    private static int INNER_R = 60;
     private static int X = 10, Y = 70, R = 430;
     private static NavigationWheel navigationWheel;
     private static boolean needCodeAnalysis = false;

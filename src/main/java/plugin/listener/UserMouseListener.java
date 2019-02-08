@@ -37,8 +37,8 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
         }
         this.INNNER_R = innerR;
         this.OUTER_R = outerR;
-        this.CENTER_X = x + OUTER_R / 2;
-        this.CENTER_Y = y + OUTER_R / 2;
+        this.CENTER_X = 600 / 2 - 45;
+        this.CENTER_Y = 600 / 2 - 45;
         this.project = project;
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
@@ -144,11 +144,11 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
             button.repaint();
             button.getCloseButton().setLocation(button.getX() + button.getWidth(), button.getY());
             button.getCloseButton().repaint();
-            try {
+            /*try {
                 Thread.sleep(ANIMATION_PAUSE);
             } catch (InterruptedException e) {
 
-            }
+            } */
         }
     }
 
@@ -161,11 +161,11 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
             button.repaint();
             button.getCloseButton().setLocation(button.getX() + button.getWidth(), button.getY());
             button.getCloseButton().repaint();
-            try {
+            /*try {
                 Thread.sleep(ANIMATION_PAUSE);
             } catch (InterruptedException e) {
 
-            }
+            }*/
         }
     }
 
@@ -176,8 +176,8 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
             FileButton closestButton = fileButtons.get(0);
             for (FileButton fileButton : fileButtons) {
                 l = countLength(me.getX(), me.getY(),
-                        fileButton.getX() + fileButton.getWidth()/2,
-                        fileButton.getY() + fileButton.getHeight()/2);
+                        fileButton.getOriginalX() + fileButton.getWidth()/2,
+                        fileButton.getOriginalY() + fileButton.getHeight()/2);
                 if (l < min) {
                     closestButton = fileButton;
                     min = l;
