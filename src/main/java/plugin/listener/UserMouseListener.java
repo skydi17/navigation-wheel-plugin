@@ -31,14 +31,16 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
         if (UIUtil.isRetina()) {
             CLICK_ACCURACY_DELTA = 40;
             CHOSEN_BUTTON = 100;
+            this.CENTER_X = wheel.getWidth()/2 - 90;
+            this.CENTER_Y = wheel.getHeight()/2 - 60;
         } else {
             CLICK_ACCURACY_DELTA = 20;
             CHOSEN_BUTTON = 50;
+            this.CENTER_X = wheel.getWidth()/2 - 45;
+            this.CENTER_Y = wheel.getHeight()/2 - 30;
         }
         this.INNNER_R = innerR;
         this.OUTER_R = outerR;
-        this.CENTER_X = 600 / 2 - 45;
-        this.CENTER_Y = 600 / 2 - 45;
         this.project = project;
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
