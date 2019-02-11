@@ -5,13 +5,14 @@ import com.intellij.openapi.fileEditor.impl.FileEditorManagerImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.docking.DockManager;
 import com.intellij.ui.docking.impl.DockManagerImpl;
-import com.intellij.util.ui.UIUtil;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 
 import javax.swing.*;
-import java.awt.event.*;
-import java.applet.*;
+import java.applet.Applet;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 public class UserMouseListener extends Applet implements MouseListener, MouseMotionListener {
@@ -21,25 +22,18 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     FileButton lastSelected;
     Project project;
     JFrame wheel;
-    final int INNNER_R, OUTER_R, CENTER_X, CENTER_Y;
+    final int OUTER_R, CENTER_X, CENTER_Y;
     final int CLICK_ACCURACY_DELTA, CHOSEN_BUTTON;
     final int ANIMATION_PAUSE = 10, ANIMATION_LOOP = 5, ANIMATION_SHIFT = 5;
     private int currentX, currentY;
     private boolean dragging = false;
 
-    public UserMouseListener(int x, int y, int innerR, int outerR, Project project, JFrame wheel) {
-        if (UIUtil.isRetina()) {
-            CLICK_ACCURACY_DELTA = 40;
-            CHOSEN_BUTTON = 100;
-            this.CENTER_X = wheel.getWidth()/2 - 90;
-            this.CENTER_Y = wheel.getHeight()/2 - 60;
-        } else {
-            CLICK_ACCURACY_DELTA = 20;
-            CHOSEN_BUTTON = 50;
-            this.CENTER_X = wheel.getWidth()/2 - 45;
-            this.CENTER_Y = wheel.getHeight()/2 - 30;
-        }
-        this.INNNER_R = innerR;
+    public UserMouseListener(int x, int y, int outerR, Project project, JFrame wheel) {
+        CLICK_ACCURACY_DELTA = 20;
+        CHOSEN_BUTTON = 50;
+        this.CENTER_X = wheel.getWidth()/2 - 45;
+        this.CENTER_Y = wheel.getHeight()/2 - 30;
+        //this.INNNER_R = innerR;
         this.OUTER_R = outerR;
         this.project = project;
         this.wheel = wheel;
@@ -173,7 +167,7 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
 
     private void animateFiles(MouseEvent me) {
         double l = countLength(me.getX(), me.getY(), CENTER_X, CENTER_Y);
-        if (l > INNNER_R && l < OUTER_R) {
+        if (l < OUTER_R) {
             double min = Double.MAX_VALUE;
             FileButton closestButton = fileButtons.get(0);
             for (FileButton fileButton : fileButtons) {

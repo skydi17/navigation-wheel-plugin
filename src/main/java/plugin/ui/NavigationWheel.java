@@ -1,6 +1,7 @@
 package plugin.ui;
 
 import com.intellij.util.ui.UIUtil;
+import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -9,13 +10,10 @@ import java.awt.image.BufferedImage;
 
 public class NavigationWheel extends JComponent {
     private final int WHEEL_SIZE;
+    final double SCALE = 0.5;
 
     public NavigationWheel() {
-        if (UIUtil.isRetina()) {
-            WHEEL_SIZE = 1200;
-        } else {
-            WHEEL_SIZE = 600;
-        }
+        WHEEL_SIZE = 600;
     }
 
     public JFrame createWheel(int x, int y) {
@@ -24,11 +22,19 @@ public class NavigationWheel extends JComponent {
         wheel.setBackground(new Color(0,0,0,0));
         wheel.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         wheel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        Point point = MouseInfo.getPointerInfo().getLocation();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int centerX = (int) screenSize.getWidth()/2;
+        int centerY = (int) screenSize.getHeight()/2;
+        try {
+            Robot robot = new Robot();
+            robot.mouseMove(centerX, centerY);
+        } catch (Exception e) {
+
+        }
         wheel.setLayout(null);
         if (x == -1 && y == -1) {
-            wheel.setBounds((int) (point.getX() - WHEEL_SIZE / 2),
-                    (int) (point.getY() - WHEEL_SIZE / 2), WHEEL_SIZE, WHEEL_SIZE);
+            wheel.setBounds(centerX - WHEEL_SIZE/2,
+                    centerY - WHEEL_SIZE/2, WHEEL_SIZE, WHEEL_SIZE);
         } else {
             wheel.setBounds(x, y, WHEEL_SIZE, WHEEL_SIZE);
         }
@@ -37,14 +43,14 @@ public class NavigationWheel extends JComponent {
 
     public void setBackground(JFrame wheel) {
         BufferedImage image = null;
-        try
-        {
+        try {
             if (UIUtil.isRetina()) {
                 if (UIUtil.isUnderDarcula()) {
-                    image = ImageIO.read(getClass().getResource("/images/wheel2x_dark.png"));
+                    image = ImageIO.read(getClass().getResource("/images/wheel@2x_dark.png"));
                 } else {
-                    image = ImageIO.read(getClass().getResource("/images/wheel2x.png"));
+                    image = ImageIO.read(getClass().getResource("/images/wheel@2x.png"));
                 }
+                image = Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, (int) (image.getWidth() * SCALE), (int) (image.getHeight() * SCALE));
             } else {
                 if (UIUtil.isUnderDarcula()) {
                     image = ImageIO.read(getClass().getResource("/images/wheel_dark.png"));
@@ -52,9 +58,7 @@ public class NavigationWheel extends JComponent {
                     image = ImageIO.read(getClass().getResource("/images/wheel.png"));
                 }
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
