@@ -10,6 +10,7 @@ import plugin.ui.FileButton;
 
 import javax.swing.*;
 import java.applet.Applet;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -93,7 +94,11 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     }
 
     public void mouseDragged(MouseEvent me) {
-
+        /*if (dragging && me.getSource() instanceof FileButton) {
+            JButton button = (JButton) me.getSource();
+            button.setBounds(me.getX() + button.getWidth()/2, me.getY() + button.getHeight()/2, button.getWidth(), button.getHeight());
+            button.repaint();
+        }*/
     }
 
     public void mouseMoved(MouseEvent me) {

@@ -48,14 +48,14 @@ public class NavigationWheel extends JComponent {
                 if (UIUtil.isUnderDarcula()) {
                     image = ImageIO.read(getClass().getResource("/images/wheel@2x_dark.png"));
                 } else {
-                    image = ImageIO.read(getClass().getResource("/images/wheel@2x.png"));
+                    image = ImageIO.read(getClass().getResource("/images/wheel1@2x.png"));
                 }
                 image = Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, (int) (image.getWidth() * SCALE), (int) (image.getHeight() * SCALE));
             } else {
                 if (UIUtil.isUnderDarcula()) {
                     image = ImageIO.read(getClass().getResource("/images/wheel_dark.png"));
                 } else {
-                    image = ImageIO.read(getClass().getResource("/images/wheel.png"));
+                    image = ImageIO.read(getClass().getResource("/images/wheel1.png"));
                 }
             }
         } catch (Exception e) {

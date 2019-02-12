@@ -3,6 +3,7 @@ package plugin.ui;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class FileButton extends JButton {
 
@@ -74,6 +75,7 @@ public class FileButton extends JButton {
         file.setEnabled(true);
         file.setVisible(true);
         file.setFocusable(Boolean.FALSE);
+        file.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return file;
     }
 }
