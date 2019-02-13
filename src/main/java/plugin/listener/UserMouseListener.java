@@ -10,7 +10,6 @@ import plugin.ui.FileButton;
 
 import javax.swing.*;
 import java.applet.Applet;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -24,14 +23,12 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     Project project;
     JFrame wheel;
     final int OUTER_R, CENTER_X, CENTER_Y;
-    final int CLICK_ACCURACY_DELTA, CHOSEN_BUTTON;
+    final int CLICK_ACCURACY_DELTA = 20, CHOSEN_BUTTON = 50;
     final int ANIMATION_PAUSE = 10, ANIMATION_LOOP = 5, ANIMATION_SHIFT = 5;
-    private int currentX, currentY;
-    private boolean dragging = false;
+    private int clickX, clickY;
+    private boolean isButtonDragging = false;
 
     public UserMouseListener(int x, int y, int outerR, Project project, JFrame wheel) {
-        CLICK_ACCURACY_DELTA = 20;
-        CHOSEN_BUTTON = 50;
         this.CENTER_X = wheel.getWidth()/2 - 45;
         this.CENTER_Y = wheel.getHeight()/2 - 30;
         //this.INNNER_R = innerR;
@@ -70,14 +67,15 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     }
 
     public void mousePressed(MouseEvent me) {
-        currentX = me.getX();
-        currentY = me.getY();
-        dragging = true;
+        clickX = me.getX();
+        clickY = me.getY();
+        isButtonDragging = true;
     }
 
     public void mouseReleased(MouseEvent me) {
-        dragging = false;
-        if (currentX - me.getX() < CLICK_ACCURACY_DELTA && currentY - me.getY() < CLICK_ACCURACY_DELTA) {
+        isButtonDragging = false;
+        FileButton button = (FileButton) me.getSource();
+        if (countLength(button.getOriginalX(), button.getOriginalY(), button.getX(), button.getY()) < CLICK_ACCURACY_DELTA) {
             if (lastSelected != null) {
                 fileEditorManager.openFile(lastSelected.getVirtualFile(), true);
             }
@@ -94,24 +92,19 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     }
 
     public void mouseDragged(MouseEvent me) {
-        /*if (dragging && me.getSource() instanceof FileButton) {
-            JButton button = (JButton) me.getSource();
-            button.setBounds(me.getX() + button.getWidth()/2, me.getY() + button.getHeight()/2, button.getWidth(), button.getHeight());
-            button.repaint();
-        }*/
+        if (isButtonDragging && me.getSource() instanceof FileButton) {
+            FileButton button = (FileButton) me.getSource();
+            button.getCloseButton().setVisible(false);
+            int dx = me.getX() - clickX;
+            int dy = me.getY() - clickY;
+            button.setLocation(button.getX() + dx, button.getY() + dy);
+        }
     }
 
     public void mouseMoved(MouseEvent me) {
-        if (!dragging && !(me.getSource() instanceof JButton)) {
-            /*Thread thread = new Thread(){
-                public void run(){ */
-                    animateFiles(me);
-            /*    }
-            };
-
-            thread.start(); */
+        if (!isButtonDragging && !(me.getSource() instanceof JButton)) {
+            animateFiles(me);
         }
-
     }
 
     private double countLength (double fromX, double fromY, double toX, double toY) {
