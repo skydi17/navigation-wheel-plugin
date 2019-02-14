@@ -10,6 +10,7 @@ import plugin.ui.FileButton;
 
 import javax.swing.*;
 import java.applet.Applet;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -23,7 +24,7 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     Project project;
     JFrame wheel;
     final int D, CENTER_X, CENTER_Y;
-    final int CLICK_ACCURACY_DELTA = 20, CHOSEN_BUTTON = 50;
+    final int WHEEL_ACCURACY_DELTA = 80, CHOSEN_BUTTON = 50;
     final int ANIMATION_PAUSE = 10, ANIMATION_LOOP = 5, ANIMATION_SHIFT = 5;
     private int clickX, clickY;
     private boolean isButtonDragging = false;
@@ -74,30 +75,29 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
 
     public void mouseReleased(MouseEvent me) {
         isButtonDragging = false;
-        if (clickX - me.getX() < CLICK_ACCURACY_DELTA && clickY - me.getY() < CLICK_ACCURACY_DELTA) {
-            if (lastSelected != null) {
-                fileEditorManager.openFile(lastSelected.getVirtualFile(), true);
-            }
-            wheel.dispose();
-            return;
+        if (lastSelected != null) {
+            fileEditorManager.openFile(lastSelected.getVirtualFile(), true);
         }
-        double l = countLength(me.getX(), me.getY(), CENTER_X, CENTER_Y);
-        if (l > D / 2) {
-            if (lastSelected != null) {
-                ((DockManagerImpl)DockManager.getInstance(project)).createNewDockContainerFor(lastSelected.getVirtualFile(), (FileEditorManagerImpl) fileEditorManager);
-            }
-            wheel.dispose();
-        }
+        wheel.dispose();
     }
 
     public void mouseDragged(MouseEvent me) {
-        /*if (isButtonDragging && me.getSource() instanceof FileButton) {
+        if (isButtonDragging && me.getSource() instanceof FileButton) {
+            Point info = MouseInfo.getPointerInfo().getLocation();
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            double l = countLength(info.getX(), info.getY(),
+                    screenSize.getWidth()/2, screenSize.getHeight()/2);
             FileButton button = (FileButton) me.getSource();
-            button.getCloseButton().setVisible(false);
-            int dx = me.getX() - clickX;
-            int dy = me.getY() - clickY;
-            button.setLocation(button.getX() + dx, button.getY() + dy);
-        } */
+            if (l < D/2 + WHEEL_ACCURACY_DELTA) {
+                button.getCloseButton().setVisible(false);
+                int dx = me.getX() - clickX;
+                int dy = me.getY() - clickY;
+                button.setLocation(button.getX() + dx, button.getY() + dy);
+            } else {
+                ((DockManagerImpl)DockManager.getInstance(project)).createNewDockContainerFor(button.getVirtualFile(), (FileEditorManagerImpl) fileEditorManager);
+                wheel.dispose();
+            }
+        }
     }
 
     public void mouseMoved(MouseEvent me) {
