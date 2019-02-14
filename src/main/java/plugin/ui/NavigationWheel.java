@@ -16,7 +16,7 @@ public class NavigationWheel extends JComponent {
         WHEEL_SIZE = 600;
     }
 
-    public JFrame createWheel(int x, int y) {
+    public JFrame createWheel() {
         JFrame wheel = new JFrame();
         wheel.setUndecorated(true);
         wheel.setBackground(new Color(0,0,0,0));
@@ -32,12 +32,8 @@ public class NavigationWheel extends JComponent {
 
         }
         wheel.setLayout(null);
-        if (x == -1 && y == -1) {
-            wheel.setBounds(centerX - WHEEL_SIZE/2,
+        wheel.setBounds(centerX - WHEEL_SIZE/2,
                     centerY - WHEEL_SIZE/2, WHEEL_SIZE, WHEEL_SIZE);
-        } else {
-            wheel.setBounds(x, y, WHEEL_SIZE, WHEEL_SIZE);
-        }
         return wheel;
     }
 
@@ -65,7 +61,7 @@ public class NavigationWheel extends JComponent {
         wheel.setContentPane(new TranslucentPane());
         JLabel background = new JLabel(new ImageIcon(image));
         background.setBounds(background.getX(), background.getY(),
-                600, 600);
+                WHEEL_SIZE, WHEEL_SIZE);
         wheel.add(background);
     }
 }

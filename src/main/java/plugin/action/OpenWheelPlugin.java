@@ -23,9 +23,11 @@ import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
     //private static int INNER_R = 40;
-    private static int X = 10, Y = 70, R = 430;
+    private static int X = 10, Y = 70, D = 430;
     private static NavigationWheel navigationWheel;
     private static boolean needCodeAnalysis = false;
+    private final String NOT_ENOUGH_FILES_MESSAGE = "Not enough files opened.";
+    private final String TITLE_MESSAGE = "Information";
 
 
     public OpenWheelPlugin() {
@@ -41,16 +43,16 @@ public class OpenWheelPlugin extends AnAction {
         if (project != null) {
             FileEditorManager manager = FileEditorManager.getInstance(project);
             if (manager.getOpenFiles().length > 1) {
-                createWheel(project, null, -1, -1);
+                createWheel(project, null);
             } else {
-                Messages.showMessageDialog(project, "Not enough files opened.", "Information", Messages.getInformationIcon());
+                Messages.showMessageDialog(project, NOT_ENOUGH_FILES_MESSAGE, TITLE_MESSAGE, Messages.getInformationIcon());
             }
         }
     }
 
-    public static void createWheel(Project project, VirtualFile closedFile, int x, int y) {
+    public static void createWheel(Project project, VirtualFile closedFile) {
         navigationWheel = new NavigationWheel();
-        viewBar(project, navigationWheel.createWheel(x, y), closedFile);
+        viewBar(project, navigationWheel.createWheel(), closedFile);
     }
 
     public static void viewBar(Project project, JFrame wheel, VirtualFile closedFile) {
@@ -58,13 +60,13 @@ public class OpenWheelPlugin extends AnAction {
         VirtualFile files[] = manager.getOpenFiles();
 
         ArrayList<FileButton> fileButtons = new ArrayList<>(files.length);
-        UserMouseListener userMouseListener = new UserMouseListener(X, Y, R, project, wheel);
+        UserMouseListener userMouseListener = new UserMouseListener(D, project, wheel);
 
         double step = 0;
         for (int i = 0; i < files.length; i++) {
             if (files[i] != closedFile) {
                 FileButton file = new FileButton(files[i]);
-                file.createFileButton(step, files.length, R, X, Y);
+                file.createFileButton(step, files.length, D/2, X, Y);
                 file.addMouseListener(userMouseListener);
                 file.addMouseMotionListener(userMouseListener);
                 wheel.getLayeredPane().add(file);
@@ -96,7 +98,6 @@ public class OpenWheelPlugin extends AnAction {
             List<CodeSmellInfo> codeSmellInfos = CodeSmellDetector.getInstance(manager.getProject()).findCodeSmells(Arrays.asList(fileButton.getVirtualFile()));
             for (CodeSmellInfo codeSmellInfo : codeSmellInfos) {
                 if (codeSmellInfo.getSeverity() == HighlightSeverity.ERROR) {
-                    fileButton.setHasErrors(true);
                     if (UIUtil.isUnderDarcula()) {
                         fileButton.setBackground(Color.LIGHT_GRAY);
                         fileButton.getCloseButton().setBackground(Color.LIGHT_GRAY);

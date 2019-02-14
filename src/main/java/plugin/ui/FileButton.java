@@ -11,7 +11,6 @@ public class FileButton extends JButton {
     private final int FILE_BUTTON_HEIGHT;
     private VirtualFile virtualFile;
     private CloseButton closeButton;
-    private boolean hasErrors;
     private int originalX;
     private int originalY;
 
@@ -19,7 +18,6 @@ public class FileButton extends JButton {
         FILE_BUTTON_WEIGHT = 125;
         FILE_BUTTON_HEIGHT = 25;
         this.virtualFile = virtualFile;
-        hasErrors = false;
     }
 
     public VirtualFile getVirtualFile() {
@@ -36,14 +34,6 @@ public class FileButton extends JButton {
 
     public void setCloseButton(CloseButton closeButton) {
         this.closeButton = closeButton;
-    }
-
-    public boolean isHasErrors() {
-        return hasErrors;
-    }
-
-    public void setHasErrors(boolean hasErrors) {
-        this.hasErrors = hasErrors;
     }
 
     public int getOriginalX() {
@@ -68,8 +58,8 @@ public class FileButton extends JButton {
                                        int X,
                                        int Y) {
         FileButton file = this;
-        file.setOriginalX((int) (X + R/2 + R/2*Math.cos(step - Math.PI/filesLength)));
-        file.setOriginalY((int) (Y + R/2 + R/2*Math.sin(step - Math.PI/filesLength)));
+        file.setOriginalX((int) (X + R + R*Math.cos(step - Math.PI/filesLength)));
+        file.setOriginalY((int) (Y + R + R*Math.sin(step - Math.PI/filesLength)));
         file.setText(virtualFile.getName());
         file.setBounds(file.getOriginalX(), file.getOriginalY(), FILE_BUTTON_WEIGHT, FILE_BUTTON_HEIGHT);
         file.setEnabled(true);

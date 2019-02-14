@@ -22,17 +22,17 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     FileButton lastSelected;
     Project project;
     JFrame wheel;
-    final int OUTER_R, CENTER_X, CENTER_Y;
+    final int D, CENTER_X, CENTER_Y;
     final int CLICK_ACCURACY_DELTA = 20, CHOSEN_BUTTON = 50;
     final int ANIMATION_PAUSE = 10, ANIMATION_LOOP = 5, ANIMATION_SHIFT = 5;
     private int clickX, clickY;
     private boolean isButtonDragging = false;
 
-    public UserMouseListener(int x, int y, int outerR, Project project, JFrame wheel) {
+    public UserMouseListener(int d, Project project, JFrame wheel) {
         this.CENTER_X = wheel.getWidth()/2 - 45;
         this.CENTER_Y = wheel.getHeight()/2 - 30;
         //this.INNNER_R = innerR;
-        this.OUTER_R = outerR;
+        this.D = d;
         this.project = project;
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
@@ -74,8 +74,7 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
 
     public void mouseReleased(MouseEvent me) {
         isButtonDragging = false;
-        FileButton button = (FileButton) me.getSource();
-        if (countLength(button.getOriginalX(), button.getOriginalY(), button.getX(), button.getY()) < CLICK_ACCURACY_DELTA) {
+        if (clickX - me.getX() < CLICK_ACCURACY_DELTA && clickY - me.getY() < CLICK_ACCURACY_DELTA) {
             if (lastSelected != null) {
                 fileEditorManager.openFile(lastSelected.getVirtualFile(), true);
             }
@@ -83,7 +82,7 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
             return;
         }
         double l = countLength(me.getX(), me.getY(), CENTER_X, CENTER_Y);
-        if (l > OUTER_R / 2) {
+        if (l > D / 2) {
             if (lastSelected != null) {
                 ((DockManagerImpl)DockManager.getInstance(project)).createNewDockContainerFor(lastSelected.getVirtualFile(), (FileEditorManagerImpl) fileEditorManager);
             }
@@ -92,13 +91,13 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     }
 
     public void mouseDragged(MouseEvent me) {
-        if (isButtonDragging && me.getSource() instanceof FileButton) {
+        /*if (isButtonDragging && me.getSource() instanceof FileButton) {
             FileButton button = (FileButton) me.getSource();
             button.getCloseButton().setVisible(false);
             int dx = me.getX() - clickX;
             int dy = me.getY() - clickY;
             button.setLocation(button.getX() + dx, button.getY() + dy);
-        }
+        } */
     }
 
     public void mouseMoved(MouseEvent me) {
@@ -110,7 +109,7 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     private double countLength (double fromX, double fromY, double toX, double toY) {
         double a = toX - fromX;
         double b = toY - fromY;
-        return Math.sqrt(a*a+b*b);
+        return Math.sqrt(a*a + b*b);
     }
 
     private void increaseButton(FileButton button) {
@@ -165,7 +164,7 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
 
     private void animateFiles(MouseEvent me) {
         double l = countLength(me.getX(), me.getY(), CENTER_X, CENTER_Y);
-        if (l < OUTER_R) {
+        if (l < D) {
             double min = Double.MAX_VALUE;
             FileButton closestButton = fileButtons.get(0);
             for (FileButton fileButton : fileButtons) {
