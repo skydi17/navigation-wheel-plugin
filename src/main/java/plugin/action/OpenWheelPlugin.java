@@ -43,19 +43,19 @@ public class OpenWheelPlugin extends AnAction {
         if (project != null) {
             FileEditorManager manager = FileEditorManager.getInstance(project);
             if (manager.getOpenFiles().length > 1) {
-                createWheel(project, null);
+                createWheel(project, Boolean.FALSE);
             } else {
                 Messages.showMessageDialog(project, NOT_ENOUGH_FILES_MESSAGE, TITLE_MESSAGE, Messages.getInformationIcon());
             }
         }
     }
 
-    public static void createWheel(Project project, VirtualFile closedFile) {
+    public static void createWheel(Project project, boolean closeFileOperation) {
         navigationWheel = new NavigationWheel();
-        viewBar(project, navigationWheel.createWheel(), closedFile);
+        viewBar(project, navigationWheel.createWheel(closeFileOperation));
     }
 
-    public static void viewBar(Project project, JFrame wheel, VirtualFile closedFile) {
+    public static void viewBar(Project project, JFrame wheel) {
         FileEditorManager manager = FileEditorManager.getInstance(project);
         VirtualFile files[] = manager.getOpenFiles();
 
@@ -64,33 +64,29 @@ public class OpenWheelPlugin extends AnAction {
 
         double step = 0;
         for (int i = 0; i < files.length; i++) {
-            if (files[i] != closedFile) {
-                FileButton file = new FileButton(files[i]);
-                file.createFileButton(step, files.length, D/2, X, Y);
-                file.addMouseListener(userMouseListener);
-                file.addMouseMotionListener(userMouseListener);
-                wheel.getLayeredPane().add(file);
-                fileButtons.add(file);
+            FileButton file = new FileButton(files[i]);
+            file.createFileButton(step, files.length, D/2, X, Y);
+            file.addMouseListener(userMouseListener);
+            file.addMouseMotionListener(userMouseListener);
+            wheel.getLayeredPane().add(file);
+            fileButtons.add(file);
 
-                CloseButton closeButton = new CloseButton(file);
-                closeButton.createCloseButton(wheel, project);
-                file.setCloseButton(closeButton);
-                wheel.getLayeredPane().add(closeButton);
-            } else {
-                manager.closeFile(closedFile);
-            }
+            CloseButton closeButton = new CloseButton(file);
+            closeButton.createCloseButton(wheel, project);
+            file.setCloseButton(closeButton);
+            wheel.getLayeredPane().add(closeButton);
             step = step + 2 * Math.PI/files.length;
         }
         if (needCodeAnalysis) {
             runCodeAnalysis(manager, fileButtons);
-            needCodeAnalysis = false;
+            needCodeAnalysis = Boolean.FALSE;
         }
         userMouseListener.setFileButtons(fileButtons);
         wheel.addMouseListener(userMouseListener);
         wheel.addMouseMotionListener(userMouseListener);
         wheel.addFocusListener(new WheelFocusListener(wheel));
         navigationWheel.setBackground(wheel);
-        wheel.setVisible(true);
+        wheel.setVisible(Boolean.TRUE);
     }
 
     private static void runCodeAnalysis(FileEditorManager manager, ArrayList<FileButton> fileButtons) {
@@ -99,8 +95,8 @@ public class OpenWheelPlugin extends AnAction {
             for (CodeSmellInfo codeSmellInfo : codeSmellInfos) {
                 if (codeSmellInfo.getSeverity() == HighlightSeverity.ERROR) {
                     if (UIUtil.isUnderDarcula()) {
-                        fileButton.setBackground(Color.LIGHT_GRAY);
-                        fileButton.getCloseButton().setBackground(Color.LIGHT_GRAY);
+                        fileButton.setBackground(Color.RED);
+                        fileButton.getCloseButton().setBackground(Color.RED);
                     } else {
                         fileButton.setBackground(Color.PINK);
                         fileButton.getCloseButton().setBackground(Color.PINK);

@@ -16,7 +16,7 @@ public class NavigationWheel extends JComponent {
         WHEEL_SIZE = 600;
     }
 
-    public JFrame createWheel() {
+    public JFrame createWheel(Boolean closeFileOperation) {
         JFrame wheel = new JFrame();
         wheel.setUndecorated(true);
         wheel.setBackground(new Color(0,0,0,0));
@@ -25,11 +25,13 @@ public class NavigationWheel extends JComponent {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int centerX = (int) screenSize.getWidth()/2;
         int centerY = (int) screenSize.getHeight()/2;
-        try {
-            Robot robot = new Robot();
-            robot.mouseMove(centerX, centerY);
-        } catch (Exception e) {
+        if (!closeFileOperation) {
+            try {
+                Robot robot = new Robot();
+                robot.mouseMove(centerX, centerY);
+            } catch (Exception e) {
 
+            }
         }
         wheel.setLayout(null);
         wheel.setBounds(centerX - WHEEL_SIZE/2,

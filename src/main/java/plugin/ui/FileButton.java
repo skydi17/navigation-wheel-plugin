@@ -64,7 +64,6 @@ public class FileButton extends JButton {
         file.setBounds(file.getOriginalX(), file.getOriginalY(), FILE_BUTTON_WEIGHT, FILE_BUTTON_HEIGHT);
         file.setEnabled(true);
         file.setVisible(true);
-        file.setFocusable(Boolean.FALSE);
         file.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return file;
     }

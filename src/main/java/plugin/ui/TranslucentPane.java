@@ -5,12 +5,12 @@ import java.awt.*;
 
 public class TranslucentPane extends JPanel {
 
-    public TranslucentPane() {
+public TranslucentPane() {
         setOpaque(false);
-    }
+        }
 
-    @Override
-    protected void paintComponent(Graphics g) {
+@Override
+protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g.create();
@@ -18,6 +18,6 @@ public class TranslucentPane extends JPanel {
         g2d.setColor(getBackground());
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
-    }
+        }
 
-}
+        }
