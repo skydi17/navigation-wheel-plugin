@@ -28,8 +28,8 @@ public class CloseButton extends JButton {
         CloseButton closeButton = this;
         closeButton.setBounds(fileButton.getX() + fileButton.getWidth(), fileButton.getY(),
                 CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE);
-        closeButton.setEnabled(true);
-        closeButton.setVisible(true);
+        closeButton.setEnabled(Boolean.TRUE);
+        closeButton.setVisible(Boolean.TRUE);
         closeButton.setText("x");
         closeButton.setFocusable(Boolean.FALSE);
         closeButton.addActionListener(new CloseButtonListener(project,

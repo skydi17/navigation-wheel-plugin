@@ -10,7 +10,7 @@ import com.intellij.openapi.vcs.CodeSmellDetector;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.UIUtil;
 import plugin.listener.UserMouseListener;
-import plugin.listener.WheelFocusListener;
+import plugin.listener.WheelWindowsListener;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
@@ -22,10 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
-    //private static int INNER_R = 40;
     private static int X = 10, Y = 70, D = 430;
     private static NavigationWheel navigationWheel;
-    private static boolean needCodeAnalysis = false;
+    private static boolean needCodeAnalysis = Boolean.FALSE;
     private final String NOT_ENOUGH_FILES_MESSAGE = "Not enough files opened.";
     private final String TITLE_MESSAGE = "Information";
 
@@ -77,14 +76,16 @@ public class OpenWheelPlugin extends AnAction {
             wheel.getLayeredPane().add(closeButton);
             step = step + 2 * Math.PI/files.length;
         }
+
         if (needCodeAnalysis) {
             runCodeAnalysis(manager, fileButtons);
             needCodeAnalysis = Boolean.FALSE;
         }
+
         userMouseListener.setFileButtons(fileButtons);
         wheel.addMouseListener(userMouseListener);
         wheel.addMouseMotionListener(userMouseListener);
-        wheel.addFocusListener(new WheelFocusListener(wheel));
+        wheel.addWindowListener(new WheelWindowsListener(wheel));
         navigationWheel.setBackground(wheel);
         wheel.setVisible(Boolean.TRUE);
     }

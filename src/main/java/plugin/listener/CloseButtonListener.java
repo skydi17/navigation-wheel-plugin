@@ -11,10 +11,10 @@ import java.awt.event.*;
 
 public class CloseButtonListener extends Applet implements ActionListener {
 
-    FileEditorManager fileEditorManager;
-    Project project;
-    JFrame wheel;
-    VirtualFile virtualFile;
+    private final FileEditorManager fileEditorManager;
+    private final Project project;
+    private final JFrame wheel;
+    private final VirtualFile virtualFile;
 
     public CloseButtonListener (Project project, JFrame wheel, VirtualFile virtualFile) {
         this.project = project;
@@ -27,9 +27,8 @@ public class CloseButtonListener extends Applet implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         wheel.dispose();
         fileEditorManager.closeFile(virtualFile);
-        if (fileEditorManager.getOpenFiles().length <= 1) {
-            return;
+        if (fileEditorManager.getOpenFiles().length > 1) {
+            OpenWheelPlugin.createWheel(project, Boolean.TRUE);
         }
-        OpenWheelPlugin.createWheel(project, Boolean.TRUE);
     }
 }

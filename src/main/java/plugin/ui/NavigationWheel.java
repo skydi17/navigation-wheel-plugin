@@ -9,16 +9,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class NavigationWheel extends JComponent {
-    private final int WHEEL_SIZE;
-    final double SCALE = 0.5;
-
-    public NavigationWheel() {
-        WHEEL_SIZE = 600;
-    }
+    private final int WHEEL_SIZE = 600;
+    private final double SCALE = 0.5;
 
     public JFrame createWheel(Boolean closeFileOperation) {
         JFrame wheel = new JFrame();
-        wheel.setUndecorated(true);
+        wheel.setUndecorated(Boolean.TRUE);
         wheel.setBackground(new Color(0,0,0,0));
         wheel.getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         wheel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

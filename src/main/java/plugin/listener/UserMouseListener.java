@@ -19,19 +19,19 @@ import java.util.ArrayList;
 
 public class UserMouseListener extends Applet implements MouseListener, MouseMotionListener {
 
-    ArrayList<FileButton> fileButtons;
-    FileEditorManager fileEditorManager;
-    FileButton lastSelected;
-    Project project;
-    JFrame wheel;
+    private ArrayList<FileButton> fileButtons;
+    private final FileEditorManager fileEditorManager;
+    private FileButton lastSelected;
+    private final Project project;
+    private final JFrame wheel;
     final int D, CENTER_X, CENTER_Y;
-    final int WHEEL_ACCURACY_DELTA = 80;
+    final int WHEEL_ACCURACY_DELTA = 80, WIDTH_ACCURACY_DELTA = 45, HEIGHT__ACCURACY_DELTA = 30;
     private int clickX, clickY;
-    private boolean isButtonDragging = false;
+    private boolean isButtonDragging = Boolean.FALSE;
 
     public UserMouseListener(int d, Project project, JFrame wheel) {
-        this.CENTER_X = wheel.getWidth()/2 - 45;
-        this.CENTER_Y = wheel.getHeight()/2 - 30;
+        this.CENTER_X = wheel.getWidth()/2 - WIDTH_ACCURACY_DELTA;
+        this.CENTER_Y = wheel.getHeight()/2 - HEIGHT__ACCURACY_DELTA;
         this.D = d;
         this.project = project;
         this.wheel = wheel;
@@ -53,13 +53,13 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     public void mousePressed(MouseEvent me) {
         clickX = me.getX();
         clickY = me.getY();
-        isButtonDragging = true;
+        isButtonDragging = Boolean.TRUE;
     }
 
     public void mouseReleased(MouseEvent me) {
-        isButtonDragging = false;
+        isButtonDragging = Boolean.FALSE;
         if (lastSelected != null) {
-            fileEditorManager.openFile(lastSelected.getVirtualFile(), true);
+            fileEditorManager.openFile(lastSelected.getVirtualFile(), Boolean.TRUE);
         }
         wheel.dispose();
     }
@@ -100,16 +100,14 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
         FileButton closestButton = fileButtons.get(0);
         for (FileButton fileButton : fileButtons) {
             double l = countLength(me.getX(), me.getY(),
-                    fileButton.getOriginalX() + fileButton.getWidth()/2,
-                    fileButton.getOriginalY() + fileButton.getHeight()/2);
+                    fileButton.getOriginalX() + fileButton.getWidth() / 2,
+                    fileButton.getOriginalY() + fileButton.getHeight() / 2);
             if (l < min) {
                 closestButton = fileButton;
                 min = l;
             }
         }
         if (lastSelected != closestButton) {
-            //closestButton.setRequestFocusEnabled(true);
-            //closestButton.requestFocusInWindow();
             closestButton.requestFocus();
             lastSelected = closestButton;
         }
