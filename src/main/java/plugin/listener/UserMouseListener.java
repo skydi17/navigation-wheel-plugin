@@ -24,15 +24,15 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     private FileButton lastSelected;
     private final Project project;
     private final JFrame wheel;
-    final int D, CENTER_X, CENTER_Y;
+    final int DIAMETER, CENTER_X, CENTER_Y;
     final int WHEEL_ACCURACY_DELTA = 80, WIDTH_ACCURACY_DELTA = 45, HEIGHT__ACCURACY_DELTA = 30;
     private int clickX, clickY;
     private boolean isButtonDragging = Boolean.FALSE;
 
-    public UserMouseListener(int d, Project project, JFrame wheel) {
+    public UserMouseListener(int diameter, Project project, JFrame wheel) {
         this.CENTER_X = wheel.getWidth()/2 - WIDTH_ACCURACY_DELTA;
         this.CENTER_Y = wheel.getHeight()/2 - HEIGHT__ACCURACY_DELTA;
-        this.D = d;
+        this.DIAMETER = diameter;
         this.project = project;
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
@@ -71,7 +71,7 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
             double l = countLength(info.getX(), info.getY(),
                     screenSize.getWidth()/2, screenSize.getHeight()/2);
             FileButton button = (FileButton) me.getSource();
-            if (l < D/2 + WHEEL_ACCURACY_DELTA) {
+            if (l < DIAMETER/2 + WHEEL_ACCURACY_DELTA) {
                 button.getCloseButton().setVisible(Boolean.FALSE);
                 int dx = me.getX() - clickX;
                 int dy = me.getY() - clickY;
