@@ -5,8 +5,6 @@ import com.intellij.openapi.fileEditor.impl.FileEditorManagerImpl;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.docking.DockManager;
 import com.intellij.ui.docking.impl.DockManagerImpl;
-import javafx.animation.Timeline;
-import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 
 import javax.swing.*;
@@ -24,22 +22,25 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     private FileButton lastSelected;
     private final Project project;
     private final JFrame wheel;
-    final int DIAMETER, CENTER_X, CENTER_Y;
-    final int WHEEL_ACCURACY_DELTA = 80, WIDTH_ACCURACY_DELTA = 45, HEIGHT__ACCURACY_DELTA = 30;
+    final int DIAMETER, CENTER_X, CENTER_Y, PAINTED_R;
     private int clickX, clickY;
     private boolean isButtonDragging = Boolean.FALSE;
 
-    public UserMouseListener(int diameter, Project project, JFrame wheel) {
-        this.CENTER_X = wheel.getWidth()/2 - WIDTH_ACCURACY_DELTA;
-        this.CENTER_Y = wheel.getHeight()/2 - HEIGHT__ACCURACY_DELTA;
+    public UserMouseListener(int diameter, int paintedR, Project project, JFrame wheel) {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.CENTER_X = screenSize.width/2;
+        this.CENTER_Y = screenSize.height/2;
         this.DIAMETER = diameter;
+        this.PAINTED_R = paintedR;
         this.project = project;
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
     }
 
     public void mouseClicked(MouseEvent me) {
-
+        if (me.getSource() instanceof FileButton) {
+            fileEditorManager.openFile(lastSelected.getVirtualFile(), Boolean.TRUE);
+        }
     }
 
     public void mouseEntered(MouseEvent me) {
@@ -59,27 +60,32 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     public void mouseReleased(MouseEvent me) {
         isButtonDragging = Boolean.FALSE;
         if (lastSelected != null) {
-            fileEditorManager.openFile(lastSelected.getVirtualFile(), Boolean.TRUE);
+            if (me.getSource() instanceof FileButton) {
+                Point info = MouseInfo.getPointerInfo().getLocation();
+                double l = countLength(info.getX(), info.getY(), CENTER_X, CENTER_Y);
+                FileButton button = (FileButton) me.getSource();
+                if (l < PAINTED_R) {
+                    button.setLocation(button.getOriginalX(), button.getOriginalY());
+                    button.getCloseButton().setVisible(true);
+                    button.repaint();
+                } else {
+                    ((DockManagerImpl) DockManager.getInstance(project)).createNewDockContainerFor(button.getVirtualFile(), (FileEditorManagerImpl) fileEditorManager);
+                    wheel.dispose();
+                }
+            } else {
+                fileEditorManager.openFile(lastSelected.getVirtualFile(), Boolean.TRUE);
+                wheel.dispose();
+            }
         }
-        wheel.dispose();
     }
 
     public void mouseDragged(MouseEvent me) {
         if (isButtonDragging && me.getSource() instanceof FileButton) {
-            Point info = MouseInfo.getPointerInfo().getLocation();
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            double l = countLength(info.getX(), info.getY(),
-                    screenSize.getWidth()/2, screenSize.getHeight()/2);
             FileButton button = (FileButton) me.getSource();
-            if (l < DIAMETER/2 + WHEEL_ACCURACY_DELTA) {
-                button.getCloseButton().setVisible(Boolean.FALSE);
-                int dx = me.getX() - clickX;
-                int dy = me.getY() - clickY;
-                button.setLocation(button.getX() + dx, button.getY() + dy);
-            } else {
-                ((DockManagerImpl)DockManager.getInstance(project)).createNewDockContainerFor(button.getVirtualFile(), (FileEditorManagerImpl) fileEditorManager);
-                wheel.dispose();
-            }
+            button.getCloseButton().setVisible(Boolean.FALSE);
+            int dx = me.getX() - clickX;
+            int dy = me.getY() - clickY;
+            button.setLocation(button.getX() + dx, button.getY() + dy);
         }
     }
 

@@ -1,7 +1,6 @@
 package plugin.ui;
 
 import com.intellij.util.ui.UIUtil;
-import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -9,10 +8,16 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class NavigationWheel extends JComponent {
-    private final int WHEEL_SIZE = 600;
+    private final int WHEEL_HEIGHT, WHEEL_WIDTH;
+    private final int PAINTED_R = 295;
     private final double SCALE = 0.5;
 
-    public JFrame createWheel(Boolean closeFileOperation) {
+    public NavigationWheel(int height, int width){
+        WHEEL_HEIGHT = height;
+        WHEEL_WIDTH = width;
+    }
+
+    public JFrame createWheel() {
         JFrame wheel = new JFrame();
         wheel.setUndecorated(Boolean.TRUE);
         wheel.setBackground(new Color(0,0,0,0));
@@ -21,45 +26,49 @@ public class NavigationWheel extends JComponent {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int centerX = (int) screenSize.getWidth()/2;
         int centerY = (int) screenSize.getHeight()/2;
-        if (!closeFileOperation) {
-            try {
-                Robot robot = new Robot();
-                robot.mouseMove(centerX, centerY);
-            } catch (Exception e) {
+        try {
+            Robot robot = new Robot();
+            robot.mouseMove(centerX, centerY);
+        } catch (Exception e) {
 
-            }
         }
         wheel.setLayout(null);
-        wheel.setBounds(centerX - WHEEL_SIZE/2,
-                    centerY - WHEEL_SIZE/2, WHEEL_SIZE, WHEEL_SIZE);
+        wheel.setBounds(0, 0, WHEEL_WIDTH, WHEEL_HEIGHT);
         return wheel;
     }
 
     public void setBackground(JFrame wheel) {
         BufferedImage image = null;
+        ImageIcon imageIcon = null;
         try {
             if (UIUtil.isRetina()) {
                 if (UIUtil.isUnderDarcula()) {
-                    image = ImageIO.read(getClass().getResource("/images/wheel@2x_dark.png"));
+                    image = ImageIO.read(getClass().getResource("/images/wheel_illustrator_retina_4.png"));
                 } else {
-                    image = ImageIO.read(getClass().getResource("/images/wheel1@2x.png"));
+                    image = ImageIO.read(getClass().getResource("/images/wheel_illustrator_retina_6.png"));
                 }
-                image = Scalr.resize(image, Scalr.Method.ULTRA_QUALITY, (int) (image.getWidth() * SCALE), (int) (image.getHeight() * SCALE));
+                Image scaledImage = image.getScaledInstance(
+                        (int)(SCALE * image.getWidth()),
+                        (int)(SCALE * image.getHeight()),
+                        Image.SCALE_SMOOTH);
+                imageIcon = new ImageIcon(scaledImage);
             } else {
                 if (UIUtil.isUnderDarcula()) {
                     image = ImageIO.read(getClass().getResource("/images/wheel_dark.png"));
                 } else {
-                    image = ImageIO.read(getClass().getResource("/images/wheel1.png"));
+                    image = ImageIO.read(getClass().getResource("/images/wheel_illustrator_5.png"));
                 }
+                imageIcon = new ImageIcon(image);
             }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
         wheel.setContentPane(new TranslucentPane());
-        JLabel background = new JLabel(new ImageIcon(image));
-        background.setBounds(background.getX(), background.getY(),
-                WHEEL_SIZE, WHEEL_SIZE);
+        JLabel background = new JLabel(imageIcon);
+        wheel.setLayout(null);
+        background.setBounds(WHEEL_WIDTH/2 - PAINTED_R, WHEEL_HEIGHT/2 - PAINTED_R,
+                image.getWidth(), image.getHeight());
         wheel.add(background);
     }
 }
