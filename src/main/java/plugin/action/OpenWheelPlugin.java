@@ -11,7 +11,6 @@ import com.intellij.openapi.vcs.CodeSmellDetector;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ui.UIUtil;
 import plugin.listener.UserMouseListener;
-import plugin.listener.WheelWindowsListener;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
@@ -91,7 +90,7 @@ public class OpenWheelPlugin extends AnAction {
         userMouseListener.setFileButtons(fileButtons);
         wheel.addMouseListener(userMouseListener);
         wheel.addMouseMotionListener(userMouseListener);
-        wheel.addWindowListener(new WheelWindowsListener(wheel));
+        //wheel.addWindowListener(new WheelWindowsListener(wheel));
         navigationWheel.setBackground(wheel);
         wheel.setVisible(Boolean.TRUE);
     }
