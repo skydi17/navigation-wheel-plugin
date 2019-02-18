@@ -74,7 +74,7 @@ public class NavigationWheel extends JFrame {
         JLabel background = new JLabel(imageIcon);
         wheel.setLayout(null);
         background.setBounds(WHEEL_WIDTH/2 - PAINTED_R, WHEEL_HEIGHT/2 - PAINTED_R,
-                image.getWidth(), image.getHeight());
+                imageIcon.getIconWidth(), imageIcon.getIconHeight());
         wheel.add(background);
     }
 
