@@ -15,7 +15,6 @@ import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +57,7 @@ public class OpenWheelPlugin extends AnAction {
         viewBar(project, navigationWheel.createWheel());
     }
 
-    public static void viewBar(Project project, JFrame wheel) {
+    public static void viewBar(Project project, NavigationWheel wheel) {
         FileEditorManager manager = FileEditorManager.getInstance(project);
         VirtualFile files[] = manager.getOpenFiles();
 
@@ -88,9 +87,12 @@ public class OpenWheelPlugin extends AnAction {
         }
 
         userMouseListener.setFileButtons(fileButtons);
+        if (wheel.getMouseListeners().length != 0) {
+            wheel.removeMouseListener(wheel.getMouseListeners()[0]);
+            wheel.removeMouseMotionListener(wheel.getMouseMotionListeners()[0]);
+        }
         wheel.addMouseListener(userMouseListener);
         wheel.addMouseMotionListener(userMouseListener);
-        //wheel.addWindowListener(new WheelWindowsListener(wheel));
         navigationWheel.setBackground(wheel);
         wheel.setVisible(Boolean.TRUE);
     }

@@ -1,14 +1,15 @@
 package plugin.listener;
 
-import javax.swing.*;
+import plugin.ui.NavigationWheel;
+
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class WheelWindowsListener implements WindowListener {
 
-    private final JFrame wheel;
+    private final NavigationWheel wheel;
 
-    public  WheelWindowsListener(JFrame wheel) {
+    public  WheelWindowsListener(NavigationWheel wheel) {
         this.wheel = wheel;
     }
 
@@ -34,7 +35,11 @@ public class WheelWindowsListener implements WindowListener {
 
     @Override
     public void windowDeactivated(WindowEvent e) {
-        wheel.dispose();
+        if (wheel.isNeedToCloseWithoutFocus()) {
+            wheel.dispose();
+        } else {
+            wheel.setNeedToCloseWithoutFocus(Boolean.TRUE);
+        }
     }
 
 }

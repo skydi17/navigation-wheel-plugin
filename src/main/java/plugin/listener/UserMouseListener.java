@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.docking.DockManager;
 import com.intellij.ui.docking.impl.DockManagerImpl;
 import plugin.ui.FileButton;
+import plugin.ui.NavigationWheel;
 
 import javax.swing.*;
 import java.applet.Applet;
@@ -21,12 +22,12 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     private final FileEditorManager fileEditorManager;
     private FileButton lastSelected;
     private final Project project;
-    private final JFrame wheel;
+    private final NavigationWheel wheel;
     final int DIAMETER, CENTER_X, CENTER_Y, PAINTED_R;
     private int clickX, clickY;
     private boolean isButtonDragging = Boolean.FALSE;
 
-    public UserMouseListener(int diameter, int paintedR, Project project, JFrame wheel) {
+    public UserMouseListener(int diameter, int paintedR, Project project, NavigationWheel wheel) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.CENTER_X = screenSize.width/2;
         this.CENTER_Y = screenSize.height/2;

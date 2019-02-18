@@ -23,7 +23,7 @@ public class CloseButton extends JButton {
         this.fileButton = fileButton;
     }
 
-    public CloseButton createCloseButton(final JFrame wheel,
+    public CloseButton createCloseButton(final NavigationWheel wheel,
                                          Project project) {
         CloseButton closeButton = this;
         closeButton.setBounds(fileButton.getX() + fileButton.getWidth(), fileButton.getY(),
