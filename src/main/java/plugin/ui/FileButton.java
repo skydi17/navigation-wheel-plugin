@@ -7,14 +7,16 @@ import java.awt.*;
 
 public class FileButton extends JButton {
 
-    private final int FILE_BUTTON_WEIGHT = 125;
-    private final int FILE_BUTTON_HEIGHT = 25;
+    private final int FILE_BUTTON_WEIGHT;
+    private final int FILE_BUTTON_HEIGHT;
     private VirtualFile virtualFile;
     private CloseButton closeButton;
     private int originalX;
     private int originalY;
 
     public FileButton(VirtualFile virtualFile) {
+        FILE_BUTTON_WEIGHT = 125;
+        FILE_BUTTON_HEIGHT = 25;
         this.virtualFile = virtualFile;
     }
 
@@ -50,11 +52,7 @@ public class FileButton extends JButton {
         this.originalY = originalY;
     }
 
-    public FileButton createFileButton(double step,
-                                       int filesLength,
-                                       int R,
-                                       int X,
-                                       int Y) {
+    public FileButton init(double step, int filesLength, int R, int X, int Y) {
         FileButton file = this;
         file.setOriginalX((int) (X + R + R*Math.cos(step - Math.PI/filesLength)));
         file.setOriginalY((int) (Y + R + R*Math.sin(step - Math.PI/filesLength)));

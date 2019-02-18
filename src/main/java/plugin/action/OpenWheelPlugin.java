@@ -54,7 +54,7 @@ public class OpenWheelPlugin extends AnAction {
 
     public static void createWheel(Project project) {
         navigationWheel = new NavigationWheel(WHEEL_HEIGHT, WHEEL_WIDTH);
-        viewBar(project, navigationWheel.createWheel());
+        viewBar(project, navigationWheel.init());
     }
 
     public static void viewBar(Project project, NavigationWheel wheel) {
@@ -67,7 +67,7 @@ public class OpenWheelPlugin extends AnAction {
         double step = 0;
         for (int i = 0; i < files.length; i++) {
             FileButton file = new FileButton(files[i]);
-            file.createFileButton(step, files.length, D/2,
+            file.init(step, files.length, D/2,
                     WHEEL_WIDTH/2 - PAINTED_R + X, WHEEL_HEIGHT/2 - PAINTED_R + Y);
             file.addMouseListener(userMouseListener);
             file.addMouseMotionListener(userMouseListener);
@@ -75,7 +75,7 @@ public class OpenWheelPlugin extends AnAction {
             fileButtons.add(file);
 
             CloseButton closeButton = new CloseButton(file);
-            closeButton.createCloseButton(wheel, project);
+            closeButton.init(wheel, project);
             file.setCloseButton(closeButton);
             wheel.getLayeredPane().add(closeButton);
             step = step + 2 * Math.PI/files.length;

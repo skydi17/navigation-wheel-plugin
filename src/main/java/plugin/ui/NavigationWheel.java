@@ -10,17 +10,19 @@ import java.awt.image.BufferedImage;
 
 public class NavigationWheel extends JFrame {
     private final int WHEEL_HEIGHT, WHEEL_WIDTH;
-    private final int PAINTED_R = 295;
-    private final double SCALE = 0.5;
+    private final int PAINTED_R;
+    private final double SCALE;
     boolean needToCloseWithoutFocus;
 
     public NavigationWheel(int height, int width){
+        PAINTED_R = 295;
+        SCALE = 0.5;
         this.WHEEL_HEIGHT = height;
         this.WHEEL_WIDTH = width;
         this.needToCloseWithoutFocus = Boolean.TRUE;
     }
 
-    public NavigationWheel createWheel() {
+    public NavigationWheel init() {
         NavigationWheel wheel = this;
         wheel.setUndecorated(Boolean.TRUE);
         wheel.setBackground(new Color(0,0,0,0));
