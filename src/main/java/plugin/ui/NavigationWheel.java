@@ -45,36 +45,20 @@ public class NavigationWheel extends JFrame {
 
     public void setBackground(NavigationWheel wheel) {
         BufferedImage image = null;
-        ImageIcon imageIcon = null;
         try {
-            if (UIUtil.isRetina()) {
-                if (UIUtil.isUnderDarcula()) {
-                    image = ImageIO.read(getClass().getResource("/images/WHEEL2.png"));
-                } else {
-                    image = ImageIO.read(getClass().getResource("/images/WHEEL.png"));
-                }
-                //Image scaledImage = image.getScaledInstance(
-                  //      (int)(SCALE * image.getWidth()),
-                    //    (int)(SCALE * image.getHeight()),
-                      //  Image.SCALE_SMOOTH);
-                imageIcon = new ImageIcon(image);
+            if (UIUtil.isUnderDarcula()) {
+                image = ImageIO.read(getClass().getResource("/images/wheel_dark.png"));
             } else {
-                if (UIUtil.isUnderDarcula()) {
-                    image = ImageIO.read(getClass().getResource("/images/WHEEL2.png"));
-                } else {
-                    image = ImageIO.read(getClass().getResource("/images/WHEEL.png"));
-                }
-                imageIcon = new ImageIcon(image);
+                image = ImageIO.read(getClass().getResource("/images/wheel.png"));
             }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
-        //wheel.setContentPane(new TranslucentPane());
-        JLabel background = new JLabel(imageIcon);
+        JLabel background = new JLabel(new ImageIcon(image));
         wheel.setLayout(null);
         background.setBounds(WHEEL_WIDTH/2 - PAINTED_R, WHEEL_HEIGHT/2 - PAINTED_R,
-                imageIcon.getIconWidth(), imageIcon.getIconHeight());
+                image.getWidth(), image.getHeight());
         wheel.add(background);
     }
 
