@@ -49,20 +49,20 @@ public class NavigationWheel extends JFrame {
         try {
             if (UIUtil.isRetina()) {
                 if (UIUtil.isUnderDarcula()) {
-                    image = ImageIO.read(getClass().getResource("/images/wheel_illustrator_retina_4.png"));
+                    image = ImageIO.read(getClass().getResource("/images/WHEEL2.png"));
                 } else {
-                    image = ImageIO.read(getClass().getResource("/images/wheel_illustrator_retina_6.png"));
+                    image = ImageIO.read(getClass().getResource("/images/WHEEL.png"));
                 }
-                Image scaledImage = image.getScaledInstance(
-                        (int)(SCALE * image.getWidth()),
-                        (int)(SCALE * image.getHeight()),
-                        Image.SCALE_SMOOTH);
-                imageIcon = new ImageIcon(scaledImage);
+                //Image scaledImage = image.getScaledInstance(
+                  //      (int)(SCALE * image.getWidth()),
+                    //    (int)(SCALE * image.getHeight()),
+                      //  Image.SCALE_SMOOTH);
+                imageIcon = new ImageIcon(image);
             } else {
                 if (UIUtil.isUnderDarcula()) {
-                    image = ImageIO.read(getClass().getResource("/images/wheel_dark.png"));
+                    image = ImageIO.read(getClass().getResource("/images/WHEEL2.png"));
                 } else {
-                    image = ImageIO.read(getClass().getResource("/images/wheel_illustrator_5.png"));
+                    image = ImageIO.read(getClass().getResource("/images/WHEEL.png"));
                 }
                 imageIcon = new ImageIcon(image);
             }
@@ -70,7 +70,7 @@ public class NavigationWheel extends JFrame {
             e.printStackTrace();
             System.exit(1);
         }
-        wheel.setContentPane(new TranslucentPane());
+        //wheel.setContentPane(new TranslucentPane());
         JLabel background = new JLabel(imageIcon);
         wheel.setLayout(null);
         background.setBounds(WHEEL_WIDTH/2 - PAINTED_R, WHEEL_HEIGHT/2 - PAINTED_R,
