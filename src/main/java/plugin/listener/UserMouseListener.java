@@ -23,16 +23,17 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     private FileButton lastSelected;
     private final Project project;
     private final NavigationWheel wheel;
-    final int DIAMETER, CENTER_X, CENTER_Y, PAINTED_R;
+    final int DIAMETER, CENTER_X, CENTER_Y, PAINTED_R, INNER_R;
     private int clickX, clickY;
     private boolean isButtonDragging = Boolean.FALSE;
 
-    public UserMouseListener(int diameter, int paintedR, Project project, NavigationWheel wheel) {
+    public UserMouseListener(int diameter, int paintedR, Project project, NavigationWheel wheel, int innerR) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.CENTER_X = screenSize.width/2;
         this.CENTER_Y = screenSize.height/2;
         this.DIAMETER = diameter;
         this.PAINTED_R = paintedR;
+        this.INNER_R = innerR;
         this.project = project;
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
@@ -60,10 +61,14 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
 
     public void mouseReleased(MouseEvent me) {
         isButtonDragging = Boolean.FALSE;
+        Point info = MouseInfo.getPointerInfo().getLocation();
+        double l = countLength(info.getX(), info.getY(), CENTER_X, CENTER_Y);
+        if (l < INNER_R && !(me.getSource() instanceof FileButton)) {
+            wheel.dispose();
+            return;
+        }
         if (lastSelected != null) {
             if (me.getSource() instanceof FileButton) {
-                Point info = MouseInfo.getPointerInfo().getLocation();
-                double l = countLength(info.getX(), info.getY(), CENTER_X, CENTER_Y);
                 FileButton button = (FileButton) me.getSource();
                 if (l < PAINTED_R) {
                     button.setLocation(button.getOriginalX(), button.getOriginalY());
@@ -103,6 +108,13 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     }
 
     private void animateFiles(MouseEvent me) {
+        Point info = MouseInfo.getPointerInfo().getLocation();
+        double distance = countLength(info.getX(), info.getY(), CENTER_X, CENTER_Y);
+        if (distance < INNER_R) {
+            wheel.requestFocus();
+            lastSelected = null;
+            return;
+        }
         double min = Double.MAX_VALUE;
         FileButton closestButton = fileButtons.get(0);
         for (FileButton fileButton : fileButtons) {

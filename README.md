@@ -13,17 +13,17 @@ An IntelliJ plugin for fast and comfortable navigation
 
 <a name="installation"></a>
 # Installation
-You can find this plugin in the Jetbrains plugin repository by going to Settings -> Browse Repositories, and searching for Navigation wheel plugin.
+You can find this plugin in the Jetbrains plugin repository by going to Settings -> Browse Repositories, and searching for "Navigation wheel" plugin.
 
 <a name="usage"></a>
 # Usage
 - To open navigation wheel press alt + C + X.
-- To open navigation wheel and run code analysis press alt + C + V. It will red-highlight any opened files that contain errors. Code analysis is not a fast operation so use this key combination only if you really need it.
+- To open navigation wheel and run code analysis press alt + C + V(Works only for IntelliJ IDEA). It will red-highlight any opened files that contain errors. Code analysis is not a fast operation so use this key combination only if you really need it.
 - In order to choose a file hover your mouse over the desired file's circle segment.
 - To open a file just click circle segment or on button with file name.
 - Press and move file button out of the wheel to open file in the new window.
 - Press “x” button to close a file.
-- To close navigation wheel without any additional actions just click outside the drawn cirlce.
+- To close navigation wheel without any additional actions just click inside the drawn circle.
 
 <a name="bugs"></a>
 # Bugs

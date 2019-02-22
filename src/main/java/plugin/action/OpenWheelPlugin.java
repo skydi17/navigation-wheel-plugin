@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
-    private static final int X = 5, Y = 70, D = 430, PAINTED_R = 295;
+    private static final int X = 5, Y = 70, D = 430, PAINTED_R = 295, INNER_R = 80;
     private static NavigationWheel navigationWheel;
     private static boolean needCodeAnalysis = Boolean.FALSE;
     private static int WHEEL_HEIGHT, WHEEL_WIDTH;
@@ -62,7 +62,7 @@ public class OpenWheelPlugin extends AnAction {
         VirtualFile files[] = manager.getOpenFiles();
 
         ArrayList<FileButton> fileButtons = new ArrayList<>(files.length);
-        UserMouseListener userMouseListener = new UserMouseListener(D, PAINTED_R, project, wheel);
+        UserMouseListener userMouseListener = new UserMouseListener(D, PAINTED_R, project, wheel, INNER_R);
 
         double step = 0;
         for (int i = 0; i < files.length; i++) {
