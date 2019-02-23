@@ -10,7 +10,6 @@ An IntelliJ plugin for fast and comfortable navigation
 <a name="preview"></a>
 # Preview
 ![alt text](https://github.com/skydi17/navigation-wheel-plugin/blob/master/src/main/resources/preview.png)
-Darcula Theme
 ![alt text](https://github.com/skydi17/navigation-wheel-plugin/blob/master/src/main/resources/preview_dark.png)
 
 <a name="installation"></a>
