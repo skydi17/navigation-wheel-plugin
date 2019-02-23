@@ -42,6 +42,7 @@ public class UserMouseListener extends Applet implements MouseListener, MouseMot
     public void mouseClicked(MouseEvent me) {
         if (me.getSource() instanceof FileButton) {
             fileEditorManager.openFile(lastSelected.getVirtualFile(), Boolean.TRUE);
+            wheel.dispose();
         }
     }
 

@@ -1,9 +1,11 @@
 package plugin.ui;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import plugin.listener.CloseButtonListener;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class CloseButton extends JButton {
 
@@ -30,8 +32,8 @@ public class CloseButton extends JButton {
                 CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE);
         closeButton.setEnabled(Boolean.TRUE);
         closeButton.setVisible(Boolean.TRUE);
-        closeButton.setText("x");
-        closeButton.setFocusable(Boolean.FALSE);
+        closeButton.setMargin(new Insets(2, 2, 0, 0));
+        closeButton.setIcon(AllIcons.Actions.Close);
         closeButton.addActionListener(new CloseButtonListener(project,
                 wheel, closeButton.getFileButton().getVirtualFile()));
         return closeButton;

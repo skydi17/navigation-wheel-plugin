@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
-    private static final int X = 5, Y = 70, D = 430, PAINTED_R = 295, INNER_R = 80;
+    private static final int X = 5, Y = 70, D = 430, PAINTED_R = 295, INNER_R = 60;
     private static NavigationWheel navigationWheel;
     private static boolean needCodeAnalysis = Boolean.FALSE;
     private static int WHEEL_HEIGHT, WHEEL_WIDTH;

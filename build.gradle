@@ -23,6 +23,4 @@ intellij {
     updateSinceUntilBuild false
 }
 patchPluginXml {
-    changeNotes """
-      Made Plugin Compatible with other IDEs and updated description"""
 }
