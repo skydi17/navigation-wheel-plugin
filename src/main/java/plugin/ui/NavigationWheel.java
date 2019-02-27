@@ -1,5 +1,6 @@
 package plugin.ui;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.util.ui.UIUtil;
 
 import javax.imageio.ImageIO;
@@ -10,11 +11,13 @@ import java.awt.image.BufferedImage;
 public class NavigationWheel extends JDialog {
     private final int WHEEL_HEIGHT, WHEEL_WIDTH;
     private final int PAINTED_R;
+    private final Logger LOG;
 
     public NavigationWheel(int height, int width){
         PAINTED_R = 295;
         this.WHEEL_HEIGHT = height;
         this.WHEEL_WIDTH = width;
+        this.LOG = Logger.getInstance(NavigationWheel.class);
     }
 
     public NavigationWheel init() {
@@ -31,7 +34,7 @@ public class NavigationWheel extends JDialog {
             Robot robot = new Robot();
             robot.mouseMove(centerX, centerY);
         } catch (Exception e) {
-
+            LOG.warn("Mouse cursor wasn't moved to the centre because of error", e);
         }
         wheel.setLayout(null);
         wheel.setBounds(0, 0, WHEEL_WIDTH, WHEEL_HEIGHT);
@@ -47,8 +50,7 @@ public class NavigationWheel extends JDialog {
                 image = ImageIO.read(getClass().getResource("/images/wheel.png"));
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            LOG.error("Wheel background wasn't loaded because of the error", e);
         }
         JLabel background = new JLabel(new ImageIcon(image));
         wheel.setLayout(null);
