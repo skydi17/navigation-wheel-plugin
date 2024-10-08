@@ -2,7 +2,7 @@
     <id>org.jetbrains.navigation</id>
     <name>Navigation Wheel</name>
     <version>0.0.2</version>
-    <vendor email="skyd96@gmail.com" url="https://github.com/skydi17">Anastasia Kirillova</vendor>
+    <vendor email="skyd96@gmail.com" url="https://github.com/skydi17">Anastasia Yantsevich</vendor>
 
     <idea-version since-build="171.00"/>
 
@@ -12,7 +12,6 @@
         <li> To open navigation wheel and run code analysis press alt + C + V(Works only for IntelliJ IDEA). It will red-highlight any opened files that contain errors. Code analysis is not a fast operation so use this key combination only if you really need it.</li>
         <li> In order to choose a file hover your mouse over the desired file's circle segment.</li>
         <li> To open a file just click circle segment or on button with file name.</li>
-        <li> Press and move file button out of the wheel to open file in the new window.</li>
         <li> Press close button to close a file.</li>
         <li> To close navigation wheel without any additional actions just click inside the drawn circle.</li>
     </ul><br>
