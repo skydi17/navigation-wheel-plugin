@@ -26,7 +26,7 @@ public class CloseButton extends JButton {
     }
 
     public CloseButton init(final NavigationWheel wheel,
-                                         Project project) {
+                            Project project) {
         CloseButton closeButton = this;
         closeButton.setBounds(fileButton.getX() + fileButton.getWidth(), fileButton.getY(),
                 CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE);

@@ -54,8 +54,8 @@ public class FileButton extends JButton {
 
     public FileButton init(double step, int filesLength, int R, int X, int Y) {
         FileButton file = this;
-        file.setOriginalX((int) (X + R + R*Math.cos(step - Math.PI/filesLength)));
-        file.setOriginalY((int) (Y + R + R*Math.sin(step - Math.PI/filesLength)));
+        file.setOriginalX((int) (X + R + R * Math.cos(step - Math.PI / filesLength)));
+        file.setOriginalY((int) (Y + R + R * Math.sin(step - Math.PI / filesLength)));
         file.setIcon(virtualFile.getFileType().getIcon());
         file.setText(virtualFile.getName());
         file.setBounds(file.getOriginalX(), file.getOriginalY(), FILE_BUTTON_WEIGHT, FILE_BUTTON_HEIGHT);

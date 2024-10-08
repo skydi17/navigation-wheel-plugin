@@ -9,12 +9,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.CodeSmellDetector;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.ui.UIUtil;
 import plugin.listener.UserMouseListener;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,31 +54,31 @@ public class OpenWheelPlugin extends AnAction {
 
     public static void createWheel(Project project) {
         navigationWheel = new NavigationWheel(WHEEL_HEIGHT, WHEEL_WIDTH);
-        viewBar(project, navigationWheel.init());
+        viewBar(project);
     }
 
-    public static void viewBar(Project project, NavigationWheel wheel) {
+    public static void viewBar(Project project) {
         FileEditorManager manager = FileEditorManager.getInstance(project);
         VirtualFile files[] = manager.getOpenFiles();
 
         ArrayList<FileButton> fileButtons = new ArrayList<>(files.length);
-        UserMouseListener userMouseListener = new UserMouseListener(D, PAINTED_R, project, wheel, INNER_R);
+        UserMouseListener userMouseListener = new UserMouseListener(D, PAINTED_R, project, navigationWheel, INNER_R);
 
         double step = 0;
         for (int i = 0; i < files.length; i++) {
             FileButton file = new FileButton(files[i]);
-            file.init(step, files.length, D/2,
-                    WHEEL_WIDTH/2 - PAINTED_R + X, WHEEL_HEIGHT/2 - PAINTED_R + Y);
+            file.init(step, files.length, D / 2,
+                    WHEEL_WIDTH / 2 - PAINTED_R + X, WHEEL_HEIGHT / 2 - PAINTED_R + Y);
             file.addMouseListener(userMouseListener);
             file.addMouseMotionListener(userMouseListener);
-            wheel.getLayeredPane().add(file);
+            navigationWheel.getLayeredPane().add(file);
             fileButtons.add(file);
 
             CloseButton closeButton = new CloseButton(file);
-            closeButton.init(wheel, project);
+            closeButton.init(navigationWheel, project);
             file.setCloseButton(closeButton);
-            wheel.getLayeredPane().add(closeButton);
-            step = step + 2 * Math.PI/files.length;
+            navigationWheel.getLayeredPane().add(closeButton);
+            step = step + 2 * Math.PI / files.length;
         }
 
         if (needCodeAnalysis) {
@@ -87,14 +87,14 @@ public class OpenWheelPlugin extends AnAction {
         }
 
         userMouseListener.setFileButtons(fileButtons);
-        if (wheel.getMouseListeners().length != 0) {
-            wheel.removeMouseListener(wheel.getMouseListeners()[0]);
-            wheel.removeMouseMotionListener(wheel.getMouseMotionListeners()[0]);
+        if (navigationWheel.getMouseListeners().length != 0) {
+            navigationWheel.removeMouseListener(navigationWheel.getMouseListeners()[0]);
+            navigationWheel.removeMouseMotionListener(navigationWheel.getMouseMotionListeners()[0]);
         }
-        wheel.addMouseListener(userMouseListener);
-        wheel.addMouseMotionListener(userMouseListener);
-        navigationWheel.setBackground(wheel);
-        wheel.setVisible(Boolean.TRUE);
+        navigationWheel.addMouseListener(userMouseListener);
+        navigationWheel.addMouseMotionListener(userMouseListener);
+        navigationWheel.setBackground(navigationWheel);
+        navigationWheel.setVisible(Boolean.TRUE);
     }
 
     private static void runCodeAnalysis(FileEditorManager manager, ArrayList<FileButton> fileButtons) {
@@ -102,7 +102,8 @@ public class OpenWheelPlugin extends AnAction {
             List<CodeSmellInfo> codeSmellInfos = CodeSmellDetector.getInstance(manager.getProject()).findCodeSmells(Arrays.asList(fileButton.getVirtualFile()));
             for (CodeSmellInfo codeSmellInfo : codeSmellInfos) {
                 if (codeSmellInfo.getSeverity() == HighlightSeverity.ERROR) {
-                    if (UIUtil.isUnderDarcula()) {
+                    String theme = UIManager.getLookAndFeel().getName().toLowerCase();
+                    if (theme.contains("darcula") || theme.contains("dark")) {
                         fileButton.setBackground(Color.RED);
                         fileButton.getCloseButton().setBackground(Color.RED);
                     } else {
