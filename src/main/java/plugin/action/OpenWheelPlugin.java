@@ -94,7 +94,9 @@ public class OpenWheelPlugin extends AnAction {
         navigationWheel.addMouseListener(userMouseListener);
         navigationWheel.addMouseMotionListener(userMouseListener);
         navigationWheel.setBackground(navigationWheel);
-        navigationWheel.setVisible(Boolean.TRUE);
+        SwingUtilities.invokeLater(() -> {
+            navigationWheel.setVisible(true);
+        });
     }
 
     private static void runCodeAnalysis(FileEditorManager manager, ArrayList<FileButton> fileButtons) {
