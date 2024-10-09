@@ -21,100 +21,147 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
-    private static final int X = 5, Y = 70, D = 430, PAINTED_R = 295, INNER_R = 60;
-    private static NavigationWheel navigationWheel;
-    private static boolean needCodeAnalysis = Boolean.FALSE;
-    private static int WHEEL_HEIGHT, WHEEL_WIDTH;
-    private final String NOT_ENOUGH_FILES_MESSAGE = "Not enough files opened.";
-    private final String TITLE_MESSAGE = "Information";
+    private static final int X = 5;
+    private static final int Y = 70;
+    private static final int D = 430;
+    private static final int PAINTED_R = 295;
+    private static final int INNER_R = 60;
+    private static final String NOT_ENOUGH_FILES_MESSAGE = "Not enough files opened.";
+    private static final String TITLE_MESSAGE = "Information";
+    private static final Color ERROR_COLOR_DARK = Color.RED;
+    private static final Color ERROR_COLOR_LIGHT = Color.PINK;
 
+    private NavigationWheel navigationWheel;
+    private boolean needCodeAnalysis;
+    private int wheelHeight;
+    private int wheelWidth;
 
     public OpenWheelPlugin() {
-        super("Open");
+        this(false);
     }
 
-    public OpenWheelPlugin(Boolean needCodeAnalysis) {
+    public OpenWheelPlugin(boolean needCodeAnalysis) {
+        super("Open");
         this.needCodeAnalysis = needCodeAnalysis;
     }
 
+    @Override
     public void actionPerformed(AnActionEvent event) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        WHEEL_HEIGHT = (int) screenSize.getHeight();
-        WHEEL_WIDTH = (int) screenSize.getWidth();
         Project project = event.getProject();
-        if (project != null) {
-            FileEditorManager manager = FileEditorManager.getInstance(project);
-            if (manager.getOpenFiles().length > 1) {
-                createWheel(project);
-            } else {
-                Messages.showMessageDialog(project, NOT_ENOUGH_FILES_MESSAGE, TITLE_MESSAGE, Messages.getInformationIcon());
-            }
-        }
-    }
+        if (project == null) return;
 
-    public static void createWheel(Project project) {
-        navigationWheel = new NavigationWheel(WHEEL_HEIGHT, WHEEL_WIDTH);
-        viewBar(project);
-    }
-
-    public static void viewBar(Project project) {
         FileEditorManager manager = FileEditorManager.getInstance(project);
-        VirtualFile files[] = manager.getOpenFiles();
-
-        ArrayList<FileButton> fileButtons = new ArrayList<>(files.length);
-        UserMouseListener userMouseListener = new UserMouseListener(D, PAINTED_R, project, navigationWheel, INNER_R);
-
-        double step = 0;
-        for (int i = 0; i < files.length; i++) {
-            FileButton file = new FileButton(files[i]);
-            file.init(step, files.length, D / 2,
-                    WHEEL_WIDTH / 2 - PAINTED_R + X, WHEEL_HEIGHT / 2 - PAINTED_R + Y);
-            file.addMouseListener(userMouseListener);
-            file.addMouseMotionListener(userMouseListener);
-            navigationWheel.getLayeredPane().add(file);
-            fileButtons.add(file);
-
-            CloseButton closeButton = new CloseButton(file);
-            closeButton.init(navigationWheel, project);
-            file.setCloseButton(closeButton);
-            navigationWheel.getLayeredPane().add(closeButton);
-            step = step + 2 * Math.PI / files.length;
+        if (manager.getOpenFiles().length <= 1) {
+            showNotEnoughFilesMessage(project);
+            return;
         }
+
+        setUpScreenSize();
+        createWheel(project);
+    }
+
+    private void showNotEnoughFilesMessage(Project project) {
+        Messages.showMessageDialog(project, NOT_ENOUGH_FILES_MESSAGE, TITLE_MESSAGE, Messages.getInformationIcon());
+    }
+
+    private void setUpScreenSize() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.wheelHeight = screenSize.height;
+        this.wheelWidth = screenSize.width;
+    }
+
+    private void createWheel(Project project) {
+        navigationWheel = new NavigationWheel(wheelHeight, wheelWidth);
+        setUpFileButtons(project);
+    }
+
+    private void setUpFileButtons(Project project) {
+        FileEditorManager manager = FileEditorManager.getInstance(project);
+        VirtualFile[] files = manager.getOpenFiles();
+
+        if (files.length == 0) return;
+
+        List<FileButton> fileButtons = createFileButtons(files, project);
 
         if (needCodeAnalysis) {
             runCodeAnalysis(manager, fileButtons);
-            needCodeAnalysis = Boolean.FALSE;
+            needCodeAnalysis = false;
         }
 
-        userMouseListener.setFileButtons(fileButtons);
-        if (navigationWheel.getMouseListeners().length != 0) {
-            navigationWheel.removeMouseListener(navigationWheel.getMouseListeners()[0]);
-            navigationWheel.removeMouseMotionListener(navigationWheel.getMouseMotionListeners()[0]);
-        }
-        navigationWheel.addMouseListener(userMouseListener);
-        navigationWheel.addMouseMotionListener(userMouseListener);
-        navigationWheel.setBackground(navigationWheel);
-        SwingUtilities.invokeLater(() -> {
-            navigationWheel.setVisible(true);
-        });
+        UserMouseListener userMouseListener = new UserMouseListener(PAINTED_R, project, navigationWheel, INNER_R);
+        userMouseListener.setFileButtons(new ArrayList<>(fileButtons));
+
+        configureNavigationWheel(userMouseListener);
     }
 
-    private static void runCodeAnalysis(FileEditorManager manager, ArrayList<FileButton> fileButtons) {
+    private List<FileButton> createFileButtons(VirtualFile[] files, Project project) {
+        List<FileButton> fileButtons = new ArrayList<>(files.length);
+        double step = 0;
+
+        for (VirtualFile file : files) {
+            FileButton fileButton = createFileButton(file, step, project, files.length);
+            fileButtons.add(fileButton);
+            step += 2 * Math.PI / files.length;
+        }
+
+        return fileButtons;
+    }
+
+    private FileButton createFileButton(VirtualFile file, double step, Project project, int totalFiles) {
+        FileButton fileButton = new FileButton(file, step, totalFiles, D / 2,
+                wheelWidth / 2 - PAINTED_R + X, wheelHeight / 2 - PAINTED_R + Y);
+
+        CloseButton closeButton = new CloseButton(fileButton, navigationWheel, project);
+        closeButton.setupButton();
+        fileButton.setCloseButton(closeButton);
+
+        navigationWheel.getLayeredPane().add(fileButton);
+        navigationWheel.getLayeredPane().add(closeButton);
+
+        return fileButton;
+    }
+
+    private void configureNavigationWheel(UserMouseListener userMouseListener) {
+        removeExistingListeners();
+        navigationWheel.addMouseListener(userMouseListener);
+        navigationWheel.addMouseMotionListener(userMouseListener);
+        navigationWheel.setBackgroundImage();
+
+        SwingUtilities.invokeLater(() -> navigationWheel.setVisible(true));
+    }
+
+    private void removeExistingListeners() {
+        if (navigationWheel.getMouseListeners().length > 0) {
+            navigationWheel.removeMouseListener(navigationWheel.getMouseListeners()[0]);
+        }
+        if (navigationWheel.getMouseMotionListeners().length > 0) {
+            navigationWheel.removeMouseMotionListener(navigationWheel.getMouseMotionListeners()[0]);
+        }
+    }
+
+    private void runCodeAnalysis(FileEditorManager manager, List<FileButton> fileButtons) {
+        CodeSmellDetector detector = CodeSmellDetector.getInstance(manager.getProject());
+
         for (FileButton fileButton : fileButtons) {
-            List<CodeSmellInfo> codeSmellInfos = CodeSmellDetector.getInstance(manager.getProject()).findCodeSmells(Arrays.asList(fileButton.getVirtualFile()));
-            for (CodeSmellInfo codeSmellInfo : codeSmellInfos) {
-                if (codeSmellInfo.getSeverity() == HighlightSeverity.ERROR) {
-                    String theme = UIManager.getLookAndFeel().getName().toLowerCase();
-                    if (theme.contains("darcula") || theme.contains("dark")) {
-                        fileButton.setBackground(Color.RED);
-                        fileButton.getCloseButton().setBackground(Color.RED);
-                    } else {
-                        fileButton.setBackground(Color.PINK);
-                        fileButton.getCloseButton().setBackground(Color.PINK);
-                    }
-                    fileButton.repaint();
-                }
+            List<CodeSmellInfo> codeSmellInfos = detector.findCodeSmells(Arrays.asList(fileButton.getVirtualFile()));
+            applyCodeSmellHighlighting(fileButton, codeSmellInfos);
+        }
+    }
+
+    private void applyCodeSmellHighlighting(FileButton fileButton, List<CodeSmellInfo> codeSmellInfos) {
+        for (CodeSmellInfo info : codeSmellInfos) {
+            if (info.getSeverity() == HighlightSeverity.ERROR) {
+                setFileButtonErrorStyle(fileButton);
             }
         }
+    }
+
+    private void setFileButtonErrorStyle(FileButton fileButton) {
+        String theme = UIManager.getLookAndFeel().getName().toLowerCase();
+        Color errorColor = theme.contains("dark") ? ERROR_COLOR_DARK : ERROR_COLOR_LIGHT;
+
+        fileButton.setBackground(errorColor);
+        fileButton.getCloseButton().setBackground(errorColor);
+        fileButton.repaint();
     }
 }

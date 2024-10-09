@@ -9,33 +9,18 @@ import java.awt.*;
 
 public class CloseButton extends JButton {
 
-    private final int CLOSE_BUTTON_SIZE;
-    private FileButton fileButton;
+    private static final int CLOSE_BUTTON_SIZE = 25;
+    private final FileButton fileButton;
 
-    public CloseButton(FileButton fileButton) {
-        CLOSE_BUTTON_SIZE = 25;
+    public CloseButton(FileButton fileButton, NavigationWheel wheel, Project project) {
         this.fileButton = fileButton;
+        setupButton();
+        addActionListener(new CloseButtonListener(project, wheel, fileButton.getVirtualFile()));
     }
 
-    public FileButton getFileButton() {
-        return fileButton;
-    }
-
-    public void setFileButton(FileButton fileButton) {
-        this.fileButton = fileButton;
-    }
-
-    public CloseButton init(final NavigationWheel wheel,
-                            Project project) {
-        CloseButton closeButton = this;
-        closeButton.setBounds(fileButton.getX() + fileButton.getWidth(), fileButton.getY(),
-                CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE);
-        closeButton.setEnabled(Boolean.TRUE);
-        closeButton.setVisible(Boolean.TRUE);
-        closeButton.setMargin(new Insets(2, 2, 0, 0));
-        closeButton.setIcon(AllIcons.Actions.Close);
-        closeButton.addActionListener(new CloseButtonListener(project,
-                wheel, closeButton.getFileButton().getVirtualFile()));
-        return closeButton;
+    public void setupButton() {
+        setBounds(fileButton.getX() + fileButton.getWidth(), fileButton.getY(), CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE);
+        setMargin(new Insets(2, 2, 0, 0));
+        setIcon(AllIcons.Actions.Close);
     }
 }

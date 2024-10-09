@@ -18,120 +18,139 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
     private final FileEditorManager fileEditorManager;
     private FileButton lastSelected;
     private final NavigationWheel wheel;
-    final int DIAMETER, CENTER_X, CENTER_Y, PAINTED_R, INNER_R;
+    private final int centerX, centerY, paintedRadius, innerRadius;
     private int clickX, clickY;
-    private boolean isButtonDragging = Boolean.FALSE;
+    private boolean isDragging = false;
 
-    public UserMouseListener(int diameter, int paintedR, Project project, NavigationWheel wheel, int innerR) {
+    public UserMouseListener(int paintedRadius, Project project, NavigationWheel wheel, int innerRadius) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.CENTER_X = screenSize.width / 2;
-        this.CENTER_Y = screenSize.height / 2;
-        this.DIAMETER = diameter;
-        this.PAINTED_R = paintedR;
-        this.INNER_R = innerR;
+        this.centerX = screenSize.width / 2;
+        this.centerY = screenSize.height / 2;
+        this.paintedRadius = paintedRadius;
+        this.innerRadius = innerRadius;
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
     }
 
-    public void mouseClicked(MouseEvent me) {
-        if (me.getSource() instanceof FileButton) {
-            fileEditorManager.openFile(lastSelected.getVirtualFile(), Boolean.TRUE);
-            wheel.dispose();
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getSource() instanceof FileButton) {
+            openFileAndCloseWheel();
         }
     }
 
-    public void mouseEntered(MouseEvent me) {
-
+    @Override
+    public void mousePressed(MouseEvent e) {
+        clickX = e.getX();
+        clickY = e.getY();
+        isDragging = true;
     }
 
-    public void mouseExited(MouseEvent me) {
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        isDragging = false;
+        Point pointerLocation = MouseInfo.getPointerInfo().getLocation();
+        double distance = calculateDistance(pointerLocation.getX(), pointerLocation.getY(), centerX, centerY);
 
-    }
-
-    public void mousePressed(MouseEvent me) {
-        clickX = me.getX();
-        clickY = me.getY();
-        isButtonDragging = Boolean.TRUE;
-    }
-
-    public void mouseReleased(MouseEvent me) {
-        isButtonDragging = Boolean.FALSE;
-        Point info = MouseInfo.getPointerInfo().getLocation();
-        double l = countLength(info.getX(), info.getY(), CENTER_X, CENTER_Y);
-        if (l < INNER_R && !(me.getSource() instanceof FileButton)) {
+        if (distance < innerRadius && !(e.getSource() instanceof FileButton)) {
             wheel.dispose();
-            return;
-        }
-        if (lastSelected != null) {
-            if (me.getSource() instanceof FileButton) {
-                FileButton button = (FileButton) me.getSource();
-                if (l < PAINTED_R) {
-                    button.setLocation(button.getOriginalX(), button.getOriginalY());
-                    button.getCloseButton().setVisible(true);
-                    button.repaint();
+        } else if (lastSelected != null) {
+            if (e.getSource() instanceof FileButton) {
+                FileButton button = (FileButton) e.getSource();
+                if (distance < paintedRadius) {
+                    resetButtonPosition(button);
                 } else {
-                    fileEditorManager.openFile(lastSelected.getVirtualFile(), Boolean.TRUE);
-                    wheel.dispose();
+                    openFileAndCloseWheel();
                 }
             } else {
-                fileEditorManager.openFile(lastSelected.getVirtualFile(), Boolean.TRUE);
-                wheel.dispose();
+                openFileAndCloseWheel();
             }
         }
     }
 
-    public void mouseDragged(MouseEvent me) {
-        if (isButtonDragging && me.getSource() instanceof FileButton) {
-            FileButton button = (FileButton) me.getSource();
-            button.getCloseButton().setVisible(Boolean.FALSE);
-            int dx = me.getX() - clickX;
-            int dy = me.getY() - clickY;
-            button.setLocation(button.getX() + dx, button.getY() + dy);
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (isDragging && e.getSource() instanceof FileButton) {
+            FileButton button = (FileButton) e.getSource();
+            dragButton(button, e.getX(), e.getY());
         }
     }
 
-    public void mouseMoved(MouseEvent me) {
-        if (!isButtonDragging && !(me.getSource() instanceof JButton)) {
-            animateFiles(me);
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (!isDragging && !(e.getSource() instanceof JButton)) {
+            highlightClosestButton(e);
         }
     }
 
-    private double countLength(double fromX, double fromY, double toX, double toY) {
-        double a = toX - fromX;
-        double b = toY - fromY;
-        return Math.sqrt(a * a + b * b);
+    private void openFileAndCloseWheel() {
+        if (lastSelected != null) {
+            fileEditorManager.openFile(lastSelected.getVirtualFile(), true);
+            wheel.dispose();
+        }
     }
 
-    private void animateFiles(MouseEvent me) {
-        Point info = MouseInfo.getPointerInfo().getLocation();
-        double distance = countLength(info.getX(), info.getY(), CENTER_X, CENTER_Y);
-        if (distance < INNER_R) {
+    private void resetButtonPosition(FileButton button) {
+        button.setLocation(button.getOriginalX(), button.getOriginalY());
+        button.getCloseButton().setVisible(true);
+        button.repaint();
+    }
+
+    private void dragButton(FileButton button, int mouseX, int mouseY) {
+        button.getCloseButton().setVisible(false);
+        int dx = mouseX - clickX;
+        int dy = mouseY - clickY;
+        button.setLocation(button.getX() + dx, button.getY() + dy);
+    }
+
+    private double calculateDistance(double x1, double y1, double x2, double y2) {
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    private void highlightClosestButton(MouseEvent e) {
+        Point pointerLocation = MouseInfo.getPointerInfo().getLocation();
+        double distance = calculateDistance(pointerLocation.getX(), pointerLocation.getY(), centerX, centerY);
+
+        if (distance < innerRadius) {
             wheel.requestFocus();
             lastSelected = null;
             return;
         }
-        double min = Double.MAX_VALUE;
+
         FileButton closestButton = fileButtons.get(0);
-        for (FileButton fileButton : fileButtons) {
-            double l = countLength(me.getX(), me.getY(),
-                    fileButton.getOriginalX() + fileButton.getWidth() / 2,
-                    fileButton.getOriginalY() + fileButton.getHeight() / 2);
-            if (l < min) {
-                closestButton = fileButton;
-                min = l;
+        double minDistance = Double.MAX_VALUE;
+
+        for (FileButton button : fileButtons) {
+            double buttonDistance = calculateDistanceToFileButton(e, button);
+            if (buttonDistance < minDistance) {
+                closestButton = button;
+                minDistance = buttonDistance;
             }
         }
+
         if (lastSelected != closestButton) {
             closestButton.requestFocus();
             lastSelected = closestButton;
         }
     }
 
-    public ArrayList<FileButton> getFileButtons() {
-        return fileButtons;
+    private double calculateDistanceToFileButton(MouseEvent e, FileButton button) {
+        return calculateDistance(e.getX(), e.getY(),
+                button.getOriginalX() + button.getWidth() / 2,
+                button.getOriginalY() + button.getHeight() / 2);
     }
 
     public void setFileButtons(ArrayList<FileButton> fileButtons) {
         this.fileButtons = fileButtons;
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 }

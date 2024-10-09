@@ -1,5 +1,8 @@
 package plugin.listener;
 
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -10,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CloseButtonListener implements ActionListener {
-
     private final FileEditorManager fileEditorManager;
     private final Project project;
     private final NavigationWheel wheel;
@@ -23,11 +25,59 @@ public class CloseButtonListener implements ActionListener {
         this.virtualFile = virtualFile;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
+        closeFileAndDispose();
+        if (hasMultipleOpenFiles()) {
+            openNewWheel();
+        }
+    }
+
+    /**
+     * Closes the associated file and disposes of the navigation wheel.
+     */
+    private void closeFileAndDispose() {
         fileEditorManager.closeFile(virtualFile);
         wheel.dispose();
-        if (fileEditorManager.getOpenFiles().length > 1) {
-            OpenWheelPlugin.createWheel(project);
-        }
+    }
+
+    /**
+     * Checks if there are multiple open files in the editor.
+     *
+     * @return true if there are multiple open files, false otherwise.
+     */
+    private boolean hasMultipleOpenFiles() {
+        return fileEditorManager.getOpenFiles().length > 1;
+    }
+
+    /**
+     * Opens a new instance of the OpenWheelPlugin.
+     */
+    private void openNewWheel() {
+        DataContext dataContext = createDataContext();
+
+        OpenWheelPlugin openWheelPlugin = new OpenWheelPlugin(false);
+        AnActionEvent event = AnActionEvent.createFromAnAction(
+                openWheelPlugin,
+                null,
+                "openWheelEvent",
+                dataContext
+        );
+
+        openWheelPlugin.actionPerformed(event);
+    }
+
+    /**
+     * Creates a DataContext that provides the project for the OpenWheelPlugin.
+     *
+     * @return a DataContext instance.
+     */
+    private DataContext createDataContext() {
+        return dataId -> {
+            if (CommonDataKeys.PROJECT.is(dataId)) {
+                return project;
+            }
+            return null;
+        };
     }
 }
