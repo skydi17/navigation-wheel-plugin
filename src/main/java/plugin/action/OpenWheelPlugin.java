@@ -1,13 +1,10 @@
 package plugin.action;
 
-import com.intellij.codeInsight.CodeSmellInfo;
-import com.intellij.lang.annotation.HighlightSeverity;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vcs.CodeSmellDetector;
 import com.intellij.openapi.vfs.VirtualFile;
 import plugin.listener.UserMouseListener;
 import plugin.ui.CloseButton;
@@ -17,7 +14,6 @@ import plugin.ui.NavigationWheel;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class OpenWheelPlugin extends AnAction {
@@ -28,22 +24,10 @@ public class OpenWheelPlugin extends AnAction {
     private static final int INNER_R = 60;
     private static final String NOT_ENOUGH_FILES_MESSAGE = "Not enough files opened.";
     private static final String TITLE_MESSAGE = "Information";
-    private static final Color ERROR_COLOR_DARK = Color.RED;
-    private static final Color ERROR_COLOR_LIGHT = Color.PINK;
 
     private NavigationWheel navigationWheel;
-    private boolean needCodeAnalysis;
     private int wheelHeight;
     private int wheelWidth;
-
-    public OpenWheelPlugin() {
-        this(false);
-    }
-
-    public OpenWheelPlugin(boolean needCodeAnalysis) {
-        super("Open");
-        this.needCodeAnalysis = needCodeAnalysis;
-    }
 
     @Override
     public void actionPerformed(AnActionEvent event) {
@@ -82,11 +66,6 @@ public class OpenWheelPlugin extends AnAction {
         if (files.length == 0) return;
 
         List<FileButton> fileButtons = createFileButtons(files, project);
-
-        if (needCodeAnalysis) {
-            runCodeAnalysis(manager, fileButtons);
-            needCodeAnalysis = false;
-        }
 
         UserMouseListener userMouseListener = new UserMouseListener(PAINTED_R, project, navigationWheel, INNER_R);
         userMouseListener.setFileButtons(new ArrayList<>(fileButtons));
@@ -139,29 +118,4 @@ public class OpenWheelPlugin extends AnAction {
         }
     }
 
-    private void runCodeAnalysis(FileEditorManager manager, List<FileButton> fileButtons) {
-        CodeSmellDetector detector = CodeSmellDetector.getInstance(manager.getProject());
-
-        for (FileButton fileButton : fileButtons) {
-            List<CodeSmellInfo> codeSmellInfos = detector.findCodeSmells(Arrays.asList(fileButton.getVirtualFile()));
-            applyCodeSmellHighlighting(fileButton, codeSmellInfos);
-        }
-    }
-
-    private void applyCodeSmellHighlighting(FileButton fileButton, List<CodeSmellInfo> codeSmellInfos) {
-        for (CodeSmellInfo info : codeSmellInfos) {
-            if (info.getSeverity() == HighlightSeverity.ERROR) {
-                setFileButtonErrorStyle(fileButton);
-            }
-        }
-    }
-
-    private void setFileButtonErrorStyle(FileButton fileButton) {
-        String theme = UIManager.getLookAndFeel().getName().toLowerCase();
-        Color errorColor = theme.contains("dark") ? ERROR_COLOR_DARK : ERROR_COLOR_LIGHT;
-
-        fileButton.setBackground(errorColor);
-        fileButton.getCloseButton().setBackground(errorColor);
-        fileButton.repaint();
-    }
 }
