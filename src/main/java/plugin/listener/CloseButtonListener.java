@@ -56,7 +56,7 @@ public class CloseButtonListener implements ActionListener {
     private void openNewWheel() {
         DataContext dataContext = createDataContext();
 
-        OpenWheelPlugin openWheelPlugin = new OpenWheelPlugin(false);
+        OpenWheelPlugin openWheelPlugin = new OpenWheelPlugin();
         AnActionEvent event = AnActionEvent.createFromAnAction(
                 openWheelPlugin,
                 null,
