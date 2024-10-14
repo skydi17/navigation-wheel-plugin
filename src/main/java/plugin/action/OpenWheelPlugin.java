@@ -2,6 +2,7 @@ package plugin.action;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -10,13 +11,19 @@ import plugin.listener.UserMouseListener;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
+import plugin.utils.MouseCursorCenterMover;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static plugin.utils.Constants.REPAINT_WHEEL_ON_FILE_CLOSING_EVENT;
+
 public class OpenWheelPlugin extends AnAction {
+
+    private final Logger logger = Logger.getInstance(OpenWheelPlugin.class);
+
     private static final int X = 5;
     private static final int Y = 70;
     private static final int D = 430;
@@ -42,6 +49,10 @@ public class OpenWheelPlugin extends AnAction {
 
         setUpScreenSize();
         createWheel(project);
+
+        if (!REPAINT_WHEEL_ON_FILE_CLOSING_EVENT.equals(event.getPlace())) {
+            MouseCursorCenterMover.centerMouseCursor();
+        }
     }
 
     private void showNotEnoughFilesMessage(Project project) {
@@ -67,8 +78,8 @@ public class OpenWheelPlugin extends AnAction {
 
         List<FileButton> fileButtons = createFileButtons(files, project);
 
-        UserMouseListener userMouseListener = new UserMouseListener(PAINTED_R, project, navigationWheel, INNER_R);
-        userMouseListener.setFileButtons(new ArrayList<>(fileButtons));
+        UserMouseListener userMouseListener = new UserMouseListener(
+                PAINTED_R, project, navigationWheel, INNER_R, fileButtons);
 
         configureNavigationWheel(userMouseListener);
     }

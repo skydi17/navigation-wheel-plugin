@@ -12,6 +12,8 @@ import plugin.ui.NavigationWheel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static plugin.utils.Constants.REPAINT_WHEEL_ON_FILE_CLOSING_EVENT;
+
 public class CloseButtonListener implements ActionListener {
     private final FileEditorManager fileEditorManager;
     private final Project project;
@@ -60,7 +62,7 @@ public class CloseButtonListener implements ActionListener {
         AnActionEvent event = AnActionEvent.createFromAnAction(
                 openWheelPlugin,
                 null,
-                "openWheelEvent",
+                REPAINT_WHEEL_ON_FILE_CLOSING_EVENT,
                 dataContext
         );
 

@@ -8,14 +8,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class NavigationWheel extends JDialog {
+    private final Logger logger = Logger.getInstance(NavigationWheel.class);
+
     private final int wheelHeight;
     private final int wheelWidth;
-    private final Logger logger;
 
     public NavigationWheel(int height, int width) {
         this.wheelHeight = height;
         this.wheelWidth = width;
-        this.logger = Logger.getInstance(NavigationWheel.class);
         initializeDialog();
     }
 
@@ -28,24 +28,8 @@ public class NavigationWheel extends JDialog {
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setModal(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        centerMouseCursor();
         setLayout(null);
         setBounds(0, 0, wheelWidth, wheelHeight);
-    }
-
-    /**
-     * Centers the mouse cursor on the screen.
-     */
-    private void centerMouseCursor() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int centerX = (int) screenSize.getWidth() / 2;
-        int centerY = (int) screenSize.getHeight() / 2;
-        try {
-            Robot robot = new Robot();
-            robot.mouseMove(centerX, centerY);
-        } catch (AWTException e) {
-            logger.warn("Mouse cursor wasn't moved to the center due to an error", e);
-        }
     }
 
     /**

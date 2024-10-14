@@ -10,17 +10,21 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
+import java.util.List;
 
 public class UserMouseListener implements MouseListener, MouseMotionListener {
 
-    private ArrayList<FileButton> fileButtons;
+    private final List<FileButton> fileButtons;
     private final FileEditorManager fileEditorManager;
     private FileButton lastSelected;
     private final NavigationWheel wheel;
     private final int centerX, centerY, paintedRadius, innerRadius;
 
-    public UserMouseListener(int paintedRadius, Project project, NavigationWheel wheel, int innerRadius) {
+    public UserMouseListener(int paintedRadius,
+                             Project project,
+                             NavigationWheel wheel,
+                             int innerRadius,
+                             List<FileButton> fileButtons) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.centerX = screenSize.width / 2;
         this.centerY = screenSize.height / 2;
@@ -28,6 +32,7 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
         this.innerRadius = innerRadius;
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
+        this.fileButtons = fileButtons;
     }
 
     @Override
@@ -71,6 +76,14 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
         if (!(e.getSource() instanceof JButton)) {
             highlightClosestButton(e);
         }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
     }
 
     private void openFileAndCloseWheel() {
@@ -125,15 +138,4 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
                 button.getOriginalY() + button.getHeight() / 2);
     }
 
-    public void setFileButtons(ArrayList<FileButton> fileButtons) {
-        this.fileButtons = fileButtons;
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
 }
