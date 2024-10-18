@@ -21,16 +21,15 @@ public class FileButton extends JButton {
      *
      * @param virtualFile The virtual file associated with this button.
      * @param step        Angle for calculating the button's position.
-     * @param totalFiles  Total number of files for angle calculation.
      * @param radius      Radius for position calculation.
      * @param offsetX     Offset along the X-axis.
      * @param offsetY     Offset along the Y-axis.
      */
-    public FileButton(VirtualFile virtualFile, double step, int totalFiles, int radius, int offsetX, int offsetY) {
+    public FileButton(VirtualFile virtualFile, double step, int radius, int offsetX, int offsetY) {
         super(virtualFile.getName());
         this.virtualFile = virtualFile;
-        this.originalX = calculatePositionX(step, totalFiles, radius, offsetX);
-        this.originalY = calculatePositionY(step, totalFiles, radius, offsetY);
+        this.originalX = calculatePositionX(step, radius, offsetX);
+        this.originalY = calculatePositionY(step, radius, offsetY);
         initializeButton();
     }
 
@@ -48,15 +47,15 @@ public class FileButton extends JButton {
     /**
      * Calculates the position along the X-axis.
      */
-    private int calculatePositionX(double step, int totalFiles, int radius, int offsetX) {
-        return (int) (offsetX + radius + radius * Math.cos(step - Math.PI / totalFiles));
+    private int calculatePositionX(double step, int radius, int offsetX) {
+        return (int) (offsetX + radius + radius * Math.cos(step - Math.PI / 2));
     }
 
     /**
      * Calculates the position along the Y-axis.
      */
-    private int calculatePositionY(double step, int totalFiles, int radius, int offsetY) {
-        return (int) (offsetY + radius + radius * Math.sin(step - Math.PI / totalFiles));
+    private int calculatePositionY(double step, int radius, int offsetY) {
+        return (int) (offsetY + radius + radius * Math.sin(step - Math.PI / 2));
     }
 
     public VirtualFile getVirtualFile() {

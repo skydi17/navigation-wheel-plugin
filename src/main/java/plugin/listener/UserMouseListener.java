@@ -51,6 +51,11 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
         Point pointerLocation = MouseInfo.getPointerInfo().getLocation();
         double distance = calculateDistance(pointerLocation.getX(), pointerLocation.getY(), centerX, centerY);
 
+        if (distance > paintedRadius) {
+            wheel.dispose();
+            return;
+        }
+
         if (distance < innerRadius && !(e.getSource() instanceof FileButton)) {
             wheel.dispose();
         } else if (lastSelected != null) {

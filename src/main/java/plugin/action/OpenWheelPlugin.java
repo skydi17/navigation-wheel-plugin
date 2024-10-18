@@ -2,7 +2,6 @@ package plugin.action;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -18,19 +17,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static plugin.utils.Constants.REPAINT_WHEEL_ON_FILE_CLOSING_EVENT;
+import static plugin.utils.Constants.*;
 
 public class OpenWheelPlugin extends AnAction {
-
-    private final Logger logger = Logger.getInstance(OpenWheelPlugin.class);
-
-    private static final int X = 5;
-    private static final int Y = 70;
-    private static final int D = 430;
-    private static final int PAINTED_R = 295;
-    private static final int INNER_R = 60;
-    private static final String NOT_ENOUGH_FILES_MESSAGE = "Not enough files opened.";
-    private static final String TITLE_MESSAGE = "Information";
 
     private NavigationWheel navigationWheel;
     private int wheelHeight;
@@ -89,7 +78,7 @@ public class OpenWheelPlugin extends AnAction {
         double step = 0;
 
         for (VirtualFile file : files) {
-            FileButton fileButton = createFileButton(file, step, project, files.length);
+            FileButton fileButton = createFileButton(file, step, project);
             fileButtons.add(fileButton);
             step += 2 * Math.PI / files.length;
         }
@@ -97,8 +86,8 @@ public class OpenWheelPlugin extends AnAction {
         return fileButtons;
     }
 
-    private FileButton createFileButton(VirtualFile file, double step, Project project, int totalFiles) {
-        FileButton fileButton = new FileButton(file, step, totalFiles, D / 2,
+    private FileButton createFileButton(VirtualFile file, double step, Project project) {
+        FileButton fileButton = new FileButton(file, step, D / 2,
                 wheelWidth / 2 - PAINTED_R + X, wheelHeight / 2 - PAINTED_R + Y);
 
         CloseButton closeButton = new CloseButton(fileButton, navigationWheel, project);
@@ -112,21 +101,11 @@ public class OpenWheelPlugin extends AnAction {
     }
 
     private void configureNavigationWheel(UserMouseListener userMouseListener) {
-        removeExistingListeners();
         navigationWheel.addMouseListener(userMouseListener);
         navigationWheel.addMouseMotionListener(userMouseListener);
         navigationWheel.setBackgroundImage();
 
         SwingUtilities.invokeLater(() -> navigationWheel.setVisible(true));
-    }
-
-    private void removeExistingListeners() {
-        if (navigationWheel.getMouseListeners().length > 0) {
-            navigationWheel.removeMouseListener(navigationWheel.getMouseListeners()[0]);
-        }
-        if (navigationWheel.getMouseMotionListeners().length > 0) {
-            navigationWheel.removeMouseMotionListener(navigationWheel.getMouseMotionListeners()[0]);
-        }
     }
 
 }

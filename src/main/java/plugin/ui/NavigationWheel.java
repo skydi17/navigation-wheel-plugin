@@ -1,6 +1,7 @@
 package plugin.ui;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.ui.JBColor;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -24,7 +25,7 @@ public class NavigationWheel extends JDialog {
      */
     private void initializeDialog() {
         setUndecorated(true);
-        setBackground(new Color(0, 0, 0, 0));
+        setBackground(new Color(1, 1, 1, 1));
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setModal(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -57,10 +58,8 @@ public class NavigationWheel extends JDialog {
     private BufferedImage loadBackgroundImage() {
         BufferedImage image = null;
         try {
-            String theme = UIManager.getLookAndFeel().getName().toLowerCase();
-            String imagePath = theme.contains("darcula") || theme.contains("dark")
-                    ? "/images/wheel_dark.png"
-                    : "/images/wheel.png";
+            String imagePath = JBColor.isBright() ? "/images/wheel_white.png"
+                    : "/images/wheel_dark.png";
             image = ImageIO.read(getClass().getResource(imagePath));
         } catch (Exception e) {
             logger.error("Failed to load the wheel background image due to an error", e);

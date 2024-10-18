@@ -9,7 +9,10 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Fixed compatibility issues.
 
-## [1.0.1] - 2024-10-14
+## [1.1.0] - 2024-10-14
 ### Added
 - Refactored behavior so that the mouse cursor is no longer teleported to the center when closing a file.
 - Improved compatibility with other versions of the IDE.
+- Removed action with opening navigation wheel with code analysis.
+- Clicking outside circle closing plugin.
+- Changed appearance of wheel.
