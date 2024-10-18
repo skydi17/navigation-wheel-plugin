@@ -1,10 +1,8 @@
 <idea-plugin>
     <id>org.jetbrains.navigation</id>
     <name>Navigation Wheel</name>
-    <version>0.0.2</version>
+    <version>1.1.0</version>
     <vendor email="skyd96@gmail.com" url="https://github.com/skydi17">Anastasia Yantsevich</vendor>
-
-    <idea-version since-build="171.00"/>
 
     <description><![CDATA[<img alt="Wheel preview" src="https://github.com/skydi17/navigation-wheel-plugin/blob/master/src/main/resources/preview.png?raw=true"/><br>
     <ul>
