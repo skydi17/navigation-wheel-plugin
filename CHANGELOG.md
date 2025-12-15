@@ -16,3 +16,9 @@ All notable changes to this project will be documented in this file.
 - Removed action with opening navigation wheel with code analysis.
 - Clicking outside circle closing plugin.
 - Changed appearance of wheel.
+
+## [1.1.1] - 2025-12-15
+### Fixed
+- Fixed background transparency issue on Mac OS.
+- Fixed opening file when clicking directly on FileButton.
+- Fixed positioning of wheel on multi-monitor setups.
