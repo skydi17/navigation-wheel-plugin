@@ -57,8 +57,7 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
         if (distance < innerRadius && !(e.getSource() instanceof FileButton)) {
             wheel.dispose();
         } else if (lastSelected != null) {
-            if (e.getSource() instanceof FileButton) {
-                FileButton button = (FileButton) e.getSource();
+            if (e.getSource() instanceof FileButton button) {
                 if (distance < paintedRadius) {
                     resetButtonPosition(button);
                 } else {
@@ -134,7 +133,7 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
 
     private double calculateDistanceToFileButton(int mouseX, int mouseY, FileButton button) {
         return calculateDistance(mouseX, mouseY,
-                button.getOriginalX() + button.getWidth() / 2,
-                button.getOriginalY() + button.getHeight() / 2);
+                button.getOriginalX() + (double) button.getWidth() / 2,
+                button.getOriginalY() + (double) button.getHeight() / 2);
     }
 }

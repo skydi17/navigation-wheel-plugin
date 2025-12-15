@@ -35,26 +35,15 @@ public class CloseButtonListener implements ActionListener {
         }
     }
 
-    /**
-     * Closes the associated file and disposes of the navigation wheel.
-     */
     private void closeFileAndDispose() {
         fileEditorManager.closeFile(virtualFile);
         wheel.dispose();
     }
 
-    /**
-     * Checks if there are multiple open files in the editor.
-     *
-     * @return true if there are multiple open files, false otherwise.
-     */
     private boolean hasMultipleOpenFiles() {
         return fileEditorManager.getOpenFiles().length > 1;
     }
 
-    /**
-     * Opens a new instance of the OpenWheelPlugin.
-     */
     private void openNewWheel() {
         DataContext dataContext = createDataContext();
 
@@ -69,11 +58,6 @@ public class CloseButtonListener implements ActionListener {
         openWheelPlugin.actionPerformed(event);
     }
 
-    /**
-     * Creates a DataContext that provides the project for the OpenWheelPlugin.
-     *
-     * @return a DataContext instance.
-     */
     private DataContext createDataContext() {
         return dataId -> {
             if (CommonDataKeys.PROJECT.is(dataId)) {

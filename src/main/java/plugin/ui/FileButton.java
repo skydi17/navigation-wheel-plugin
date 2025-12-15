@@ -8,7 +8,6 @@ import java.awt.*;
 
 public class FileButton extends JButton {
 
-    // Constants for button size
     private static final int BUTTON_WIDTH = 125;
     private static final int BUTTON_HEIGHT = 25;
 
@@ -33,9 +32,6 @@ public class FileButton extends JButton {
         });
     }
 
-    /**
-     * Initializes button properties.
-     */
     private void initializeButton() {
         setIcon(virtualFile.getFileType().getIcon());
         setBounds(originalX, originalY, BUTTON_WIDTH, BUTTON_HEIGHT);
@@ -44,16 +40,10 @@ public class FileButton extends JButton {
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
-    /**
-     * Calculates the position along the X-axis.
-     */
     private int calculatePositionX(double step, int radius, int offsetX) {
         return (int) (offsetX + radius + radius * Math.cos(step - Math.PI / 2));
     }
 
-    /**
-     * Calculates the position along the Y-axis.
-     */
     private int calculatePositionY(double step, int radius, int offsetY) {
         return (int) (offsetY + radius + radius * Math.sin(step - Math.PI / 2));
     }

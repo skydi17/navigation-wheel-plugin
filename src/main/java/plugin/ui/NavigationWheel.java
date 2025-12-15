@@ -25,9 +25,6 @@ public class NavigationWheel extends JDialog {
         initializeDialog();
     }
 
-    /**
-     * Initializes the dialog properties.
-     */
     private void initializeDialog() {
         setUndecorated(true);
         setBackground(new Color(0, 0, 0, 1));
@@ -52,9 +49,6 @@ public class NavigationWheel extends JDialog {
         }
     }
 
-    /**
-     * Sets the background image of the navigation wheel based on the current theme.
-     */
     public void setBackgroundImage() {
         BufferedImage image = loadBackgroundImage();
         if (image != null) {
@@ -69,11 +63,6 @@ public class NavigationWheel extends JDialog {
         }
     }
 
-    /**
-     * Loads the appropriate background image based on the current UI theme.
-     *
-     * @return the loaded background image, or null if loading failed.
-     */
     private BufferedImage loadBackgroundImage() {
         BufferedImage image = null;
         try {
