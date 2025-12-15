@@ -1,6 +1,9 @@
 package plugin.ui;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.IdeFrame;
+import com.intellij.openapi.wm.WindowManager;
 import com.intellij.ui.JBColor;
 
 import javax.imageio.ImageIO;
@@ -11,10 +14,12 @@ import java.awt.image.BufferedImage;
 public class NavigationWheel extends JDialog {
     private final Logger logger = Logger.getInstance(NavigationWheel.class);
 
+    private final Project project;
     private final int wheelHeight;
     private final int wheelWidth;
 
-    public NavigationWheel(int height, int width) {
+    public NavigationWheel(Project project, int height, int width) {
+        this.project = project;
         this.wheelHeight = height;
         this.wheelWidth = width;
         initializeDialog();
@@ -25,12 +30,26 @@ public class NavigationWheel extends JDialog {
      */
     private void initializeDialog() {
         setUndecorated(true);
-        setBackground(new Color(1, 1, 1, 1));
+        setBackground(new Color(0, 0, 0, 1));
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
         setModal(true);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(null);
-        setBounds(0, 0, wheelWidth, wheelHeight);
+
+        setSize(wheelWidth, wheelHeight);
+
+        IdeFrame ideFrame = WindowManager.getInstance().getIdeFrame(project);
+        if (ideFrame != null) {
+            Window ideWindow = SwingUtilities.getWindowAncestor(ideFrame.getComponent());
+            if (ideWindow != null) {
+                Rectangle ideBounds = ideWindow.getBounds();
+
+                int x = ideBounds.x + (ideBounds.width - getWidth()) / 2;
+                int y = ideBounds.y + (ideBounds.height - getHeight()) / 2;
+
+                setLocation(x, y);
+            }
+        }
     }
 
     /**

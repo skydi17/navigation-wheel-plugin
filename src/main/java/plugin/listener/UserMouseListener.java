@@ -5,8 +5,6 @@ import com.intellij.openapi.project.Project;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -25,19 +23,20 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
                              NavigationWheel wheel,
                              int innerRadius,
                              List<FileButton> fileButtons) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.centerX = screenSize.width / 2;
-        this.centerY = screenSize.height / 2;
-        this.paintedRadius = paintedRadius;
-        this.innerRadius = innerRadius;
+
         this.wheel = wheel;
         this.fileEditorManager = FileEditorManager.getInstance(project);
         this.fileButtons = fileButtons;
+        this.paintedRadius = paintedRadius;
+        this.innerRadius = innerRadius;
+        this.centerX = wheel.getWidth() / 2;
+        this.centerY = wheel.getHeight() / 2;
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
         if (e.getSource() instanceof FileButton) {
+            lastSelected = (FileButton) e.getSource();
             openFileAndCloseWheel();
         }
     }
@@ -48,8 +47,7 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        Point pointerLocation = MouseInfo.getPointerInfo().getLocation();
-        double distance = calculateDistance(pointerLocation.getX(), pointerLocation.getY(), centerX, centerY);
+        double distance = calculateDistance(e.getX(), e.getY(), centerX, centerY);
 
         if (distance > paintedRadius) {
             wheel.dispose();
@@ -78,9 +76,7 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        if (!(e.getSource() instanceof JButton)) {
-            highlightClosestButton(e);
-        }
+        highlightClosestButton(e.getX(), e.getY());
     }
 
     @Override
@@ -110,9 +106,8 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-    private void highlightClosestButton(MouseEvent e) {
-        Point pointerLocation = MouseInfo.getPointerInfo().getLocation();
-        double distance = calculateDistance(pointerLocation.getX(), pointerLocation.getY(), centerX, centerY);
+    private void highlightClosestButton(int mouseX, int mouseY) {
+        double distance = calculateDistance(mouseX, mouseY, centerX, centerY);
 
         if (distance < innerRadius) {
             wheel.requestFocus();
@@ -124,7 +119,7 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
         double minDistance = Double.MAX_VALUE;
 
         for (FileButton button : fileButtons) {
-            double buttonDistance = calculateDistanceToFileButton(e, button);
+            double buttonDistance = calculateDistanceToFileButton(mouseX, mouseY, button);
             if (buttonDistance < minDistance) {
                 closestButton = button;
                 minDistance = buttonDistance;
@@ -137,10 +132,9 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
         }
     }
 
-    private double calculateDistanceToFileButton(MouseEvent e, FileButton button) {
-        return calculateDistance(e.getX(), e.getY(),
+    private double calculateDistanceToFileButton(int mouseX, int mouseY, FileButton button) {
+        return calculateDistance(mouseX, mouseY,
                 button.getOriginalX() + button.getWidth() / 2,
                 button.getOriginalY() + button.getHeight() / 2);
     }
-
 }

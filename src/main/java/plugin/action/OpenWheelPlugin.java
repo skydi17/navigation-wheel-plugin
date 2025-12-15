@@ -10,7 +10,6 @@ import plugin.listener.UserMouseListener;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
-import plugin.utils.MouseCursorCenterMover;
 
 import javax.swing.*;
 import java.awt.*;
@@ -38,10 +37,6 @@ public class OpenWheelPlugin extends AnAction {
 
         setUpScreenSize();
         createWheel(project);
-
-        if (!REPAINT_WHEEL_ON_FILE_CLOSING_EVENT.equals(event.getPlace())) {
-            MouseCursorCenterMover.centerMouseCursor();
-        }
     }
 
     private void showNotEnoughFilesMessage(Project project) {
@@ -55,7 +50,7 @@ public class OpenWheelPlugin extends AnAction {
     }
 
     private void createWheel(Project project) {
-        navigationWheel = new NavigationWheel(wheelHeight, wheelWidth);
+        navigationWheel = new NavigationWheel(project, wheelHeight, wheelWidth);
         setUpFileButtons(project);
     }
 
@@ -88,7 +83,8 @@ public class OpenWheelPlugin extends AnAction {
 
     private FileButton createFileButton(VirtualFile file, double step, Project project) {
         FileButton fileButton = new FileButton(file, step, D / 2,
-                wheelWidth / 2 - PAINTED_R + X, wheelHeight / 2 - PAINTED_R + Y);
+                wheelWidth / 2 - PAINTED_R + X, wheelHeight / 2 - PAINTED_R + Y,
+                FileEditorManager.getInstance(project), navigationWheel);
 
         CloseButton closeButton = new CloseButton(fileButton, navigationWheel, project);
         closeButton.setupButton();

@@ -1,5 +1,6 @@
 package plugin.ui;
 
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import javax.swing.*;
@@ -16,21 +17,20 @@ public class FileButton extends JButton {
     private final int originalX;
     private final int originalY;
 
-    /**
-     * Constructor for FileButton.
-     *
-     * @param virtualFile The virtual file associated with this button.
-     * @param step        Angle for calculating the button's position.
-     * @param radius      Radius for position calculation.
-     * @param offsetX     Offset along the X-axis.
-     * @param offsetY     Offset along the Y-axis.
-     */
-    public FileButton(VirtualFile virtualFile, double step, int radius, int offsetX, int offsetY) {
+    public FileButton(VirtualFile virtualFile, double step, int radius, int offsetX, int offsetY,
+                      FileEditorManager fileEditorManager, NavigationWheel wheel) {
         super(virtualFile.getName());
         this.virtualFile = virtualFile;
         this.originalX = calculatePositionX(step, radius, offsetX);
         this.originalY = calculatePositionY(step, radius, offsetY);
         initializeButton();
+
+        addActionListener(e -> {
+            fileEditorManager.openFile(virtualFile, true);
+            if (wheel != null) {
+                wheel.dispose();
+            }
+        });
     }
 
     /**
