@@ -108,7 +108,7 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
     private void highlightClosestButton(int mouseX, int mouseY) {
         double distance = calculateDistance(mouseX, mouseY, centerX, centerY);
 
-        if (distance < innerRadius) {
+        if (distance < innerRadius || distance > paintedRadius) {
             wheel.requestFocus();
             lastSelected = null;
             return;
