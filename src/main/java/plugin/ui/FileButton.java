@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class FileButton extends JButton {
 
-    private static final int BUTTON_WIDTH = 125;
+    private static final int BUTTON_WIDTH = 120;
     private static final int BUTTON_HEIGHT = 25;
 
     private final VirtualFile virtualFile;

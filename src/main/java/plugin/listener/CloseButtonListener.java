@@ -30,14 +30,15 @@ public class CloseButtonListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         closeFileAndDispose();
-        if (hasMultipleOpenFiles()) {
-            openNewWheel();
-        }
     }
 
     private void closeFileAndDispose() {
         fileEditorManager.closeFile(virtualFile);
         wheel.dispose();
+
+        if (hasMultipleOpenFiles()) {
+            openNewWheel();
+        }
     }
 
     private boolean hasMultipleOpenFiles() {
