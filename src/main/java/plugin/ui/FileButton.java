@@ -2,6 +2,7 @@ package plugin.ui;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import plugin.listener.OpenFileAndCloseWheelListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,12 +25,7 @@ public class FileButton extends JButton {
         this.originalY = calculatePositionY(step, radius, offsetY);
         initializeButton();
 
-        addActionListener(e -> {
-            fileEditorManager.openFile(virtualFile, true);
-            if (wheel != null) {
-                wheel.dispose();
-            }
-        });
+        addActionListener(new OpenFileAndCloseWheelListener(fileEditorManager, virtualFile, wheel));
     }
 
     private void initializeButton() {

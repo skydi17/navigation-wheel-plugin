@@ -23,7 +23,7 @@ You can find this plugin in the Jetbrains plugin repository by going to Settings
 
 <a name="usage"></a>
 # Usage
-- To open navigation wheel press alt + C + X. You can change key combination via Settings.
+- To open navigation wheel press alt + C + X. You can change key combination via Keymap in Settings.
 - In order to choose a file hover your mouse over the desired file's circle segment.
 - To open a file just click circle segment or on a button with a file name.
 - Press close button to close a file.

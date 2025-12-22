@@ -22,3 +22,5 @@ All notable changes to this project will be documented in this file.
 - Fixed background transparency issue on Mac OS.
 - Fixed opening file when clicking directly on FileButton.
 - Fixed positioning of wheel on multi-monitor setups.
+- Limited the number of files displayed on the wheel to a maximum of 10 to prevent overlapping and layout issues.
+- Removed moving cursor to the center during closing file.
