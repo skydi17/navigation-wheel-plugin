@@ -5,6 +5,8 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.impl.EditorHistoryManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.popup.JBPopup;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import plugin.listener.UserMouseListener;
 import plugin.ui.CloseButton;
@@ -113,8 +115,8 @@ public final class WheelService {
                     project
             );
 
-            wheel.getLayeredPane().add(fileButton);
-            wheel.getLayeredPane().add(closeButton);
+            wheel.add(fileButton);
+            wheel.add(closeButton);
 
             result.add(fileButton);
             step += 2 * Math.PI / files.size();
@@ -131,6 +133,30 @@ public final class WheelService {
         wheel.addMouseMotionListener(listener);
         wheel.setBackgroundImage();
 
-        SwingUtilities.invokeLater(() -> wheel.setVisible(true));
+        JBPopup popup = JBPopupFactory.getInstance()
+                .createComponentPopupBuilder(wheel, wheel)
+                .setCancelOnClickOutside(true)
+                .setCancelOnWindowDeactivation(true)
+                .setCancelKeyEnabled(true)
+                .setFocusable(true)
+                .setRequestFocus(true)
+                .setModalContext(false)
+                .setShowBorder(false)
+                .setShowShadow(false)
+                .createPopup();
+
+        wheel.setPopup(popup);
+        popup.showInFocusCenter();
+
+        Window window = SwingUtilities.getWindowAncestor(wheel);
+        if (window != null) {
+            window.setBackground(new Color(0, 0, 0, 0));
+            if (window instanceof RootPaneContainer rpc) {
+                rpc.getContentPane().setBackground(new Color(0, 0, 0, 0));
+                if (rpc.getContentPane() instanceof JComponent jc) {
+                    jc.setOpaque(false);
+                }
+            }
+        }
     }
 }

@@ -3,7 +3,8 @@ package plugin.listener;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.vfs.VirtualFile;
 
-import java.awt.*;
+import plugin.ui.NavigationWheel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,11 +12,11 @@ public class OpenFileAndCloseWheelListener implements ActionListener {
 
     private final FileEditorManager fileEditorManager;
     private final VirtualFile virtualFile;
-    private final Window wheel;
+    private final NavigationWheel wheel;
 
     public OpenFileAndCloseWheelListener(FileEditorManager fileEditorManager,
                                          VirtualFile virtualFile,
-                                         Window wheel) {
+                                         NavigationWheel wheel) {
         this.fileEditorManager = fileEditorManager;
         this.virtualFile = virtualFile;
         this.wheel = wheel;
