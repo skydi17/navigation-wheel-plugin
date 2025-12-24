@@ -38,6 +38,11 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
         if (e.getSource() instanceof FileButton) {
             lastSelected = (FileButton) e.getSource();
             openFileAndCloseWheel();
+        } else {
+            double distance = calculateDistance(e.getX(), e.getY(), centerX, centerY);
+            if (distance > paintedRadius || distance < innerRadius) {
+                wheel.dispose();
+            }
         }
     }
 

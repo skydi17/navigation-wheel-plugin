@@ -34,14 +34,6 @@ public class NavigationWheel extends JPanel {
 
         setLayout(null);
 
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                if (e.getSource() == NavigationWheel.this) {
-                    dispose();
-                }
-            }
-        });
     }
 
     @Override
