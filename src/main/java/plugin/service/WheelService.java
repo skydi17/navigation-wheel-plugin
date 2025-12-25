@@ -122,6 +122,7 @@ public final class WheelService {
                     wheel,
                     project
             );
+            fileButton.setCloseButton(closeButton);
 
             wheel.add(fileButton);
             wheel.add(closeButton);
