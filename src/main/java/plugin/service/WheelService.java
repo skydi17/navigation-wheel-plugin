@@ -8,6 +8,8 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.WindowManager;
+import plugin.listener.LostFocusWindowListener;
 import plugin.listener.UserMouseListener;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
@@ -25,7 +27,8 @@ import static plugin.utils.Constants.*;
 
 public final class WheelService {
 
-    private WheelService() {}
+    private WheelService() {
+    }
 
     public static void openWheel(Project project) {
         FileEditorManager fem = FileEditorManager.getInstance(project);
@@ -40,20 +43,25 @@ public final class WheelService {
             return;
         }
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Window activeWindow = WindowManager.getInstance().getFrame(project);
+        Rectangle screenBounds = activeWindow != null
+                ? activeWindow.getGraphicsConfiguration().getBounds()
+                : GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+
+        Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
         NavigationWheel wheel = new NavigationWheel(
-                project,
                 screenSize.height,
                 screenSize.width
         );
 
-        setupFileButtons(project, wheel, screenSize);
+        setupFileButtons(project, wheel, screenSize, screenBounds);
     }
 
     private static void setupFileButtons(
             Project project,
             NavigationWheel wheel,
-            Dimension screenSize
+            Dimension screenSize,
+            Rectangle screenBounds
     ) {
         FileEditorManager fem = FileEditorManager.getInstance(project);
 
@@ -61,10 +69,10 @@ public final class WheelService {
                 .collect(Collectors.toSet());
 
         List<VirtualFile> lastOpenFiles = Lists.reverse(EditorHistoryManager.getInstance(project).getFileList())
-                        .stream()
-                        .filter(openFiles::contains)
-                        .limit(10)
-                        .toList();
+                .stream()
+                .filter(openFiles::contains)
+                .limit(10)
+                .toList();
 
         if (lastOpenFiles.isEmpty()) {
             wheel.dispose();
@@ -86,7 +94,7 @@ public final class WheelService {
                 buttons
         );
 
-        configureWheel(wheel, mouseListener);
+        configureWheel(project, wheel, mouseListener, screenBounds);
     }
 
     private static List<FileButton> createFileButtons(
@@ -126,8 +134,10 @@ public final class WheelService {
     }
 
     private static void configureWheel(
+            Project project,
             NavigationWheel wheel,
-            UserMouseListener listener
+            UserMouseListener listener,
+            Rectangle screenBounds
     ) {
         wheel.addMouseListener(listener);
         wheel.addMouseMotionListener(listener);
@@ -143,13 +153,23 @@ public final class WheelService {
                 .setModalContext(false)
                 .setShowBorder(false)
                 .setShowShadow(false)
+                .setNormalWindowLevel(true)
                 .createPopup();
 
         wheel.setPopup(popup);
-        popup.showInFocusCenter();
+
+        Window activeWindow = WindowManager.getInstance().getFrame(project);
+        if (activeWindow != null) {
+            popup.showInScreenCoordinates(activeWindow,
+                    new Point(screenBounds.x + screenBounds.width / 2,
+                            screenBounds.y + screenBounds.height / 2));
+        } else {
+            popup.showInFocusCenter();
+        }
 
         Window window = SwingUtilities.getWindowAncestor(wheel);
         if (window != null) {
+            window.addWindowFocusListener(new LostFocusWindowListener(wheel));
             window.setBackground(new Color(0, 0, 0, 0));
             if (window instanceof RootPaneContainer rpc) {
                 rpc.getContentPane().setBackground(new Color(0, 0, 0, 0));

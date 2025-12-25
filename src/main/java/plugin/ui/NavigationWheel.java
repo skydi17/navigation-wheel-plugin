@@ -1,7 +1,6 @@
 package plugin.ui;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.ui.JBColor;
 
@@ -13,14 +12,12 @@ import java.awt.image.BufferedImage;
 public class NavigationWheel extends JPanel {
     private final Logger logger = Logger.getInstance(NavigationWheel.class);
 
-    private final Project project;
     private final int wheelHeight;
     private final int wheelWidth;
     private JBPopup popup;
 
-    public NavigationWheel(Project project, int height, int width) {
+    public NavigationWheel(int height, int width) {
         super(null);
-        this.project = project;
         this.wheelHeight = height;
         this.wheelWidth = width;
         initializePanel();
@@ -29,6 +26,7 @@ public class NavigationWheel extends JPanel {
     private void initializePanel() {
         setOpaque(false);
         setBackground(new Color(0, 0, 0, 0));
+        setBorder(null);
         setPreferredSize(new Dimension(wheelWidth, wheelHeight));
         setSize(wheelWidth, wheelHeight);
 
