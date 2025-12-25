@@ -7,6 +7,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
+import com.intellij.openapi.ui.popup.JBPopupListener;
+import com.intellij.openapi.ui.popup.LightweightWindowEvent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.WindowManager;
 import plugin.listener.LostFocusWindowListener;
@@ -134,6 +136,20 @@ public final class WheelService {
         return result;
     }
 
+    private static void configureWindow(Window window) {
+        if (window == null) return;
+        window.setOpacity(0f);
+        window.setBackground(new Color(0, 0, 0, 0));
+        if (window instanceof RootPaneContainer rpc) {
+            rpc.getContentPane().setBackground(new Color(0, 0, 0, 0));
+            if (rpc.getContentPane() instanceof JComponent jc) {
+                jc.setOpaque(false);
+            }
+        }
+        window.revalidate();
+        window.repaint();
+    }
+
     private static void configureWheel(
             Project project,
             NavigationWheel wheel,
@@ -160,6 +176,13 @@ public final class WheelService {
                 .setShowBorder(false)
                 .setShowShadow(false)
                 .setNormalWindowLevel(true)
+                .addListener(new JBPopupListener() {
+                    @Override
+                    public void beforeShown(LightweightWindowEvent event) {
+                        Window window = SwingUtilities.getWindowAncestor(event.asPopup().getContent());
+                        configureWindow(window);
+                    }
+                })
                 .createPopup();
 
         wheel.setPopup(popup);
@@ -176,13 +199,8 @@ public final class WheelService {
         Window window = SwingUtilities.getWindowAncestor(wheel);
         if (window != null) {
             window.addWindowFocusListener(new LostFocusWindowListener(wheel));
-            window.setBackground(new Color(0, 0, 0, 0));
-            if (window instanceof RootPaneContainer rpc) {
-                rpc.getContentPane().setBackground(new Color(0, 0, 0, 0));
-                if (rpc.getContentPane() instanceof JComponent jc) {
-                    jc.setOpaque(false);
-                }
-            }
+            configureWindow(window);
+            SwingUtilities.invokeLater(() -> window.setOpacity(1f));
         }
     }
 }
