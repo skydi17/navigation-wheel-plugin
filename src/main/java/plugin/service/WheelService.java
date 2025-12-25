@@ -154,7 +154,10 @@ public final class WheelService {
                 .setRequestFocus(true)
                 .setModalContext(false)
                 .setShowBorder(false)
+                .setBorderColor(new Color(0, 0, 0, 0))
                 .setShowShadow(false)
+                .setMovable(false)
+                .setResizable(false)
                 .setNormalWindowLevel(true)
                 .createPopup();
 
