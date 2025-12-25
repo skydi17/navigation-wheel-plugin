@@ -12,20 +12,24 @@ import java.awt.image.BufferedImage;
 public class NavigationWheel extends JPanel {
     private final Logger logger = Logger.getInstance(NavigationWheel.class);
 
+    private final int wheelHeight;
+    private final int wheelWidth;
     private JBPopup popup;
 
     public NavigationWheel(int height, int width) {
         super(null);
-        initializePanel(height, width);
+        this.wheelHeight = height;
+        this.wheelWidth = width;
+        initializePanel();
     }
 
-    private void initializePanel(int height, int width) {
+    private void initializePanel() {
         setOpaque(false);
         setBackground(new Color(0, 0, 0, 0));
         setBorder(null);
         setFocusable(true);
-        setPreferredSize(new Dimension(width, height));
-        setSize(width, height);
+        setPreferredSize(new Dimension(wheelWidth, wheelHeight));
+        setSize(wheelWidth, wheelHeight);
 
         setLayout(null);
 
@@ -55,8 +59,8 @@ public class NavigationWheel extends JPanel {
             JLabel background = new JLabel(new ImageIcon(image));
             background.setOpaque(false);
             background.setBounds(
-                    (getWidth() - image.getWidth()) / 2,
-                    (getHeight() - image.getHeight()) / 2,
+                    (wheelWidth - image.getWidth()) / 2,
+                    (wheelHeight - image.getHeight()) / 2,
                     image.getWidth(),
                     image.getHeight()
             );

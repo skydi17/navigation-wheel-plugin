@@ -48,17 +48,19 @@ public final class WheelService {
                 ? activeWindow.getGraphicsConfiguration().getBounds()
                 : GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
 
+        Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
         NavigationWheel wheel = new NavigationWheel(
-                WHEEL_SIZE,
-                WHEEL_SIZE
+                screenSize.height,
+                screenSize.width
         );
 
-        setupFileButtons(project, wheel, screenBounds);
+        setupFileButtons(project, wheel, screenSize, screenBounds);
     }
 
     private static void setupFileButtons(
             Project project,
             NavigationWheel wheel,
+            Dimension screenSize,
             Rectangle screenBounds
     ) {
         FileEditorManager fem = FileEditorManager.getInstance(project);
@@ -80,7 +82,8 @@ public final class WheelService {
         List<FileButton> buttons = createFileButtons(
                 lastOpenFiles,
                 project,
-                wheel
+                wheel,
+                screenSize
         );
 
         UserMouseListener mouseListener = new UserMouseListener(
@@ -97,7 +100,8 @@ public final class WheelService {
     private static List<FileButton> createFileButtons(
             List<VirtualFile> files,
             Project project,
-            NavigationWheel wheel
+            NavigationWheel wheel,
+            Dimension screenSize
     ) {
         List<FileButton> result = new ArrayList<>(files.size());
         double step = 0;
@@ -107,8 +111,8 @@ public final class WheelService {
                     file,
                     step,
                     D / 2,
-                    WHEEL_SIZE / 2 - PAINTED_R + X,
-                    WHEEL_SIZE / 2 - PAINTED_R + Y,
+                    screenSize.width / 2 - PAINTED_R + X,
+                    screenSize.height / 2 - PAINTED_R + Y,
                     FileEditorManager.getInstance(project),
                     wheel
             );
@@ -154,15 +158,20 @@ public final class WheelService {
                 .setRequestFocus(true)
                 .setModalContext(false)
                 .setShowBorder(false)
-                .setBorderColor(new Color(0, 0, 0, 0))
                 .setShowShadow(false)
-                .setMovable(false)
-                .setResizable(false)
                 .setNormalWindowLevel(true)
                 .createPopup();
 
         wheel.setPopup(popup);
-        popup.showInFocusCenter();
+
+        Window activeWindow = WindowManager.getInstance().getFrame(project);
+        if (activeWindow != null) {
+            popup.showInScreenCoordinates(activeWindow,
+                    new Point(screenBounds.x + screenBounds.width / 2,
+                            screenBounds.y + screenBounds.height / 2));
+        } else {
+            popup.showInFocusCenter();
+        }
 
         Window window = SwingUtilities.getWindowAncestor(wheel);
         if (window != null) {

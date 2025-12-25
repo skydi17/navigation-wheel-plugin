@@ -9,5 +9,4 @@ public class Constants {
     public static final int D = 430;
     public static final int PAINTED_R = 295;
     public static final int INNER_R = 60;
-    public static final int WHEEL_SIZE = 700;
 }
