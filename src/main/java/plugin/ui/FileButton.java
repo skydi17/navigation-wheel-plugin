@@ -31,6 +31,8 @@ public class FileButton extends JButton {
     private void initializeButton() {
         setIcon(virtualFile.getFileType().getIcon());
         setBounds(originalX, originalY, BUTTON_WIDTH, BUTTON_HEIGHT);
+        setFocusable(true);
+        setRolloverEnabled(true);
         setEnabled(true);
         setVisible(true);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

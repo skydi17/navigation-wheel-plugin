@@ -5,6 +5,8 @@ import com.intellij.openapi.project.Project;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -39,7 +41,8 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
             lastSelected = (FileButton) e.getSource();
             openFileAndCloseWheel();
         } else {
-            double distance = calculateDistance(e.getX(), e.getY(), centerX, centerY);
+            Point p = getRelativePoint(e);
+            double distance = calculateDistance(p.x, p.y, centerX, centerY);
             if (distance > paintedRadius || distance < innerRadius) {
                 wheel.dispose();
             }
@@ -52,7 +55,8 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        double distance = calculateDistance(e.getX(), e.getY(), centerX, centerY);
+        Point p = getRelativePoint(e);
+        double distance = calculateDistance(p.x, p.y, centerX, centerY);
 
         if (distance > paintedRadius) {
             wheel.dispose();
@@ -80,7 +84,16 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        highlightClosestButton(e.getX(), e.getY());
+        Point p = getRelativePoint(e);
+        highlightClosestButton(p.x, p.y);
+    }
+
+    private Point getRelativePoint(MouseEvent e) {
+        Point p = e.getPoint();
+        if (e.getSource() != wheel && e.getSource() instanceof Component comp) {
+            p = SwingUtilities.convertPoint(comp, p, wheel);
+        }
+        return p;
     }
 
     @Override
@@ -89,6 +102,10 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+        if (lastSelected != null) {
+            wheel.requestFocusInWindow();
+            lastSelected = null;
+        }
     }
 
     private void openFileAndCloseWheel() {
@@ -114,8 +131,10 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
         double distance = calculateDistance(mouseX, mouseY, centerX, centerY);
 
         if (distance < innerRadius || distance > paintedRadius) {
-            wheel.requestFocus();
-            lastSelected = null;
+            if (lastSelected != null) {
+                wheel.requestFocusInWindow();
+                lastSelected = null;
+            }
             return;
         }
 

@@ -27,6 +27,7 @@ public class NavigationWheel extends JPanel {
         setOpaque(false);
         setBackground(new Color(0, 0, 0, 0));
         setBorder(null);
+        setFocusable(true);
         setPreferredSize(new Dimension(wheelWidth, wheelHeight));
         setSize(wheelWidth, wheelHeight);
 

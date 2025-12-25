@@ -94,7 +94,7 @@ public final class WheelService {
                 buttons
         );
 
-        configureWheel(project, wheel, mouseListener, screenBounds);
+        configureWheel(project, wheel, mouseListener, screenBounds, buttons);
     }
 
     private static List<FileButton> createFileButtons(
@@ -137,10 +137,15 @@ public final class WheelService {
             Project project,
             NavigationWheel wheel,
             UserMouseListener listener,
-            Rectangle screenBounds
+            Rectangle screenBounds,
+            List<FileButton> buttons
     ) {
         wheel.addMouseListener(listener);
         wheel.addMouseMotionListener(listener);
+        for (FileButton button : buttons) {
+            button.addMouseListener(listener);
+            button.addMouseMotionListener(listener);
+        }
         wheel.setBackgroundImage();
 
         JBPopup popup = JBPopupFactory.getInstance()
