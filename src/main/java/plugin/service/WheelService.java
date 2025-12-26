@@ -6,10 +6,12 @@ import com.intellij.openapi.fileEditor.impl.EditorHistoryManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.WindowManager;
 import plugin.listener.UserMouseListener;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
+import plugin.ui.WheelPopup;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +25,8 @@ import static plugin.utils.Constants.*;
 
 public final class WheelService {
 
-    private WheelService() {}
+    private WheelService() {
+    }
 
     public static void openWheel(Project project) {
         FileEditorManager fem = FileEditorManager.getInstance(project);
@@ -38,20 +41,25 @@ public final class WheelService {
             return;
         }
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Window activeWindow = WindowManager.getInstance().getFrame(project);
+        Rectangle screenBounds = activeWindow != null
+                ? activeWindow.getGraphicsConfiguration().getBounds()
+                : GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+
+        Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
         NavigationWheel wheel = new NavigationWheel(
-                project,
                 screenSize.height,
                 screenSize.width
         );
 
-        setupFileButtons(project, wheel, screenSize);
+        setupFileButtons(project, wheel, screenSize, screenBounds);
     }
 
     private static void setupFileButtons(
             Project project,
             NavigationWheel wheel,
-            Dimension screenSize
+            Dimension screenSize,
+            Rectangle screenBounds
     ) {
         FileEditorManager fem = FileEditorManager.getInstance(project);
 
@@ -59,10 +67,10 @@ public final class WheelService {
                 .collect(Collectors.toSet());
 
         List<VirtualFile> lastOpenFiles = Lists.reverse(EditorHistoryManager.getInstance(project).getFileList())
-                        .stream()
-                        .filter(openFiles::contains)
-                        .limit(10)
-                        .toList();
+                .stream()
+                .filter(openFiles::contains)
+                .limit(10)
+                .toList();
 
         if (lastOpenFiles.isEmpty()) {
             wheel.dispose();
@@ -84,7 +92,7 @@ public final class WheelService {
                 buttons
         );
 
-        configureWheel(wheel, mouseListener);
+        configureWheel(project, wheel, mouseListener, screenBounds, buttons);
     }
 
     private static List<FileButton> createFileButtons(
@@ -112,9 +120,10 @@ public final class WheelService {
                     wheel,
                     project
             );
+            fileButton.setCloseButton(closeButton);
 
-            wheel.getLayeredPane().add(fileButton);
-            wheel.getLayeredPane().add(closeButton);
+            wheel.add(fileButton);
+            wheel.add(closeButton);
 
             result.add(fileButton);
             step += 2 * Math.PI / files.size();
@@ -124,13 +133,20 @@ public final class WheelService {
     }
 
     private static void configureWheel(
+            Project project,
             NavigationWheel wheel,
-            UserMouseListener listener
+            UserMouseListener listener,
+            Rectangle screenBounds,
+            List<FileButton> buttons
     ) {
         wheel.addMouseListener(listener);
         wheel.addMouseMotionListener(listener);
+        for (FileButton button : buttons) {
+            button.addMouseListener(listener);
+            button.addMouseMotionListener(listener);
+        }
         wheel.setBackgroundImage();
 
-        SwingUtilities.invokeLater(() -> wheel.setVisible(true));
+        WheelPopup.create(project, wheel, screenBounds);
     }
 }
