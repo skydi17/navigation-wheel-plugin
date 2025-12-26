@@ -5,17 +5,13 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.impl.EditorHistoryManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.ui.popup.JBPopup;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.JBPopupListener;
-import com.intellij.openapi.ui.popup.LightweightWindowEvent;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.WindowManager;
-import plugin.listener.LostFocusWindowListener;
 import plugin.listener.UserMouseListener;
 import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
+import plugin.ui.WheelPopup;
 
 import javax.swing.*;
 import java.awt.*;
@@ -136,20 +132,6 @@ public final class WheelService {
         return result;
     }
 
-    private static void configureWindow(Window window) {
-        if (window == null) return;
-        window.setOpacity(0f);
-        window.setBackground(new Color(0, 0, 0, 0));
-        if (window instanceof RootPaneContainer rpc) {
-            rpc.getContentPane().setBackground(new Color(0, 0, 0, 0));
-            if (rpc.getContentPane() instanceof JComponent jc) {
-                jc.setOpaque(false);
-            }
-        }
-        window.revalidate();
-        window.repaint();
-    }
-
     private static void configureWheel(
             Project project,
             NavigationWheel wheel,
@@ -165,42 +147,6 @@ public final class WheelService {
         }
         wheel.setBackgroundImage();
 
-        JBPopup popup = JBPopupFactory.getInstance()
-                .createComponentPopupBuilder(wheel, wheel)
-                .setCancelOnClickOutside(true)
-                .setCancelOnWindowDeactivation(true)
-                .setCancelKeyEnabled(true)
-                .setFocusable(true)
-                .setRequestFocus(true)
-                .setModalContext(false)
-                .setShowBorder(false)
-                .setShowShadow(false)
-                .setNormalWindowLevel(true)
-                .addListener(new JBPopupListener() {
-                    @Override
-                    public void beforeShown(LightweightWindowEvent event) {
-                        Window window = SwingUtilities.getWindowAncestor(event.asPopup().getContent());
-                        configureWindow(window);
-                    }
-                })
-                .createPopup();
-
-        wheel.setPopup(popup);
-
-        Window activeWindow = WindowManager.getInstance().getFrame(project);
-        if (activeWindow != null) {
-            popup.showInScreenCoordinates(activeWindow,
-                    new Point(screenBounds.x + screenBounds.width / 2,
-                            screenBounds.y + screenBounds.height / 2));
-        } else {
-            popup.showInFocusCenter();
-        }
-
-        Window window = SwingUtilities.getWindowAncestor(wheel);
-        if (window != null) {
-            window.addWindowFocusListener(new LostFocusWindowListener(wheel));
-            configureWindow(window);
-            SwingUtilities.invokeLater(() -> window.setOpacity(1f));
-        }
+        WheelPopup.create(project, wheel, screenBounds);
     }
 }

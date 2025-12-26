@@ -2,7 +2,6 @@ package plugin.listener;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.vfs.VirtualFile;
-
 import plugin.ui.NavigationWheel;
 
 import java.awt.event.ActionEvent;
