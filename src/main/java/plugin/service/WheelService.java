@@ -141,6 +141,10 @@ public final class WheelService {
         for (FileButton button : buttons) {
             button.addMouseListener(mouseListener);
             button.addMouseMotionListener(mouseListener);
+            if (button.getCloseButton() != null) {
+                button.getCloseButton().addMouseListener(mouseListener);
+                button.getCloseButton().addMouseMotionListener(mouseListener);
+            }
         }
     }
 

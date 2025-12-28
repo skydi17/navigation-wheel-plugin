@@ -2,6 +2,7 @@ package plugin.listener;
 
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
+import plugin.ui.CloseButton;
 import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
 
@@ -84,6 +85,13 @@ public class UserMouseListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (e.getSource() instanceof CloseButton) {
+            if (lastSelected != null) {
+                wheel.requestFocusInWindow();
+                lastSelected = null;
+            }
+            return;
+        }
         Point p = getRelativePoint(e);
         highlightClosestButton(p.x, p.y);
     }

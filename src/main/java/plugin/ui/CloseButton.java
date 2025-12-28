@@ -22,5 +22,8 @@ public class CloseButton extends JButton {
         setBounds(fileButton.getX() + fileButton.getWidth(), fileButton.getY(), CLOSE_BUTTON_SIZE, CLOSE_BUTTON_SIZE);
         setMargin(new Insets(2, 2, 0, 0));
         setIcon(AllIcons.Actions.Close);
+        setRolloverIcon(AllIcons.Actions.CloseHovered);
+        setFocusPainted(false);
+        setRolloverEnabled(true);
     }
 }
