@@ -24,3 +24,8 @@ All notable changes to this project will be documented in this file.
 - Fixed positioning of wheel on multi-monitor setups.
 - Limited the number of files displayed on the wheel to a maximum of 10 to prevent overlapping and layout issues.
 - Removed moving cursor to the center during closing file.
+
+## [1.1.2] - 2025-12-28
+### Fixed
+- The wheel is no longer recreated when the close button is pressed.
+- The close button is highlighted only when the mouse is directly over it.
