@@ -25,5 +25,6 @@ public class CloseButton extends JButton {
         setRolloverIcon(AllIcons.Actions.CloseHovered);
         setFocusPainted(false);
         setRolloverEnabled(true);
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 }
