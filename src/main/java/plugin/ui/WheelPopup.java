@@ -3,10 +3,8 @@ package plugin.ui;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.JBPopupListener;
-import com.intellij.openapi.ui.popup.LightweightWindowEvent;
 import com.intellij.openapi.wm.WindowManager;
-import org.jetbrains.annotations.NotNull;
+import plugin.listener.ConfigureWindowOnPopupShownListener;
 import plugin.listener.LostFocusWindowListener;
 
 import javax.swing.*;
@@ -26,13 +24,7 @@ public class WheelPopup {
                 .setShowBorder(false)
                 .setShowShadow(false)
                 .setNormalWindowLevel(true)
-                .addListener(new JBPopupListener() {
-                    @Override
-                    public void beforeShown(@NotNull LightweightWindowEvent event) {
-                        Window window = SwingUtilities.getWindowAncestor(event.asPopup().getContent());
-                        configureWindow(window);
-                    }
-                })
+                .addListener(new ConfigureWindowOnPopupShownListener())
                 .createPopup();
 
         wheel.setPopup(popup);
@@ -48,18 +40,7 @@ public class WheelPopup {
 
     }
 
-    private static void showPopup(Project project, JBPopup popup, Rectangle screenBounds) {
-        Window activeWindow = WindowManager.getInstance().getFrame(project);
-        if (activeWindow != null) {
-            popup.showInScreenCoordinates(activeWindow,
-                    new Point(screenBounds.x + screenBounds.width / 2,
-                            screenBounds.y + screenBounds.height / 2));
-        } else {
-            popup.showInFocusCenter();
-        }
-    }
-
-    private static void configureWindow(Window window) {
+    public static void configureWindow(Window window) {
         if (window == null) return;
         window.setOpacity(0f);
         window.setBackground(new Color(0, 0, 0, 0));
@@ -71,5 +52,16 @@ public class WheelPopup {
         }
         window.revalidate();
         window.repaint();
+    }
+
+    private static void showPopup(Project project, JBPopup popup, Rectangle screenBounds) {
+        Window activeWindow = WindowManager.getInstance().getFrame(project);
+        if (activeWindow != null) {
+            popup.showInScreenCoordinates(activeWindow,
+                    new Point(screenBounds.x + screenBounds.width / 2,
+                            screenBounds.y + screenBounds.height / 2));
+        } else {
+            popup.showInFocusCenter();
+        }
     }
 }
