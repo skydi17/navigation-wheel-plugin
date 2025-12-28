@@ -53,6 +53,16 @@ public class NavigationWheel extends JPanel {
         }
     }
 
+    public void clearButtons() {
+        for (Component component : getComponents()) {
+            if (component instanceof FileButton || component instanceof CloseButton || component instanceof JLabel) {
+                remove(component);
+            }
+        }
+        revalidate();
+        repaint();
+    }
+
     public void setBackgroundImage() {
         BufferedImage image = loadBackgroundImage();
         if (image != null) {

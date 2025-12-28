@@ -13,8 +13,9 @@ import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
 import plugin.ui.WheelPopup;
 
-import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,14 +53,39 @@ public final class WheelService {
                 screenSize.width
         );
 
-        setupFileButtons(project, wheel, screenSize, screenBounds);
+        setupFileButtons(project, wheel, screenSize);
+        configureWheel(project, wheel, screenBounds);
+    }
+
+    public static void refreshWheel(Project project, NavigationWheel wheel) {
+        FileEditorManager fem = FileEditorManager.getInstance(project);
+
+        if (fem.getOpenFiles().length <= 1) {
+            wheel.dispose();
+            return;
+        }
+
+        wheel.clearButtons();
+
+        Window activeWindow = WindowManager.getInstance().getFrame(project);
+        Rectangle screenBounds = activeWindow != null
+                ? activeWindow.getGraphicsConfiguration().getBounds()
+                : GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+
+        Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
+
+        setupFileButtons(project, wheel, screenSize);
+
+        updateWheelListeners(project, wheel);
+        wheel.setBackgroundImage();
+
+        wheel.requestFocusInWindow();
     }
 
     private static void setupFileButtons(
             Project project,
             NavigationWheel wheel,
-            Dimension screenSize,
-            Rectangle screenBounds
+            Dimension screenSize
     ) {
         FileEditorManager fem = FileEditorManager.getInstance(project);
 
@@ -84,6 +110,24 @@ public final class WheelService {
                 screenSize
         );
 
+        wheel.putClientProperty("fileButtons", buttons);
+    }
+
+    private static void updateWheelListeners(Project project, NavigationWheel wheel) {
+        @SuppressWarnings("unchecked")
+        List<FileButton> buttons = (List<FileButton>) wheel.getClientProperty("fileButtons");
+
+        for (MouseListener ml : wheel.getMouseListeners()) {
+            if (ml instanceof UserMouseListener) {
+                wheel.removeMouseListener(ml);
+            }
+        }
+        for (MouseMotionListener mml : wheel.getMouseMotionListeners()) {
+            if (mml instanceof UserMouseListener) {
+                wheel.removeMouseMotionListener(mml);
+            }
+        }
+
         UserMouseListener mouseListener = new UserMouseListener(
                 PAINTED_R,
                 project,
@@ -92,7 +136,12 @@ public final class WheelService {
                 buttons
         );
 
-        configureWheel(project, wheel, mouseListener, screenBounds, buttons);
+        wheel.addMouseListener(mouseListener);
+        wheel.addMouseMotionListener(mouseListener);
+        for (FileButton button : buttons) {
+            button.addMouseListener(mouseListener);
+            button.addMouseMotionListener(mouseListener);
+        }
     }
 
     private static List<FileButton> createFileButtons(
@@ -135,16 +184,9 @@ public final class WheelService {
     private static void configureWheel(
             Project project,
             NavigationWheel wheel,
-            UserMouseListener listener,
-            Rectangle screenBounds,
-            List<FileButton> buttons
+            Rectangle screenBounds
     ) {
-        wheel.addMouseListener(listener);
-        wheel.addMouseMotionListener(listener);
-        for (FileButton button : buttons) {
-            button.addMouseListener(listener);
-            button.addMouseMotionListener(listener);
-        }
+        updateWheelListeners(project, wheel);
         wheel.setBackgroundImage();
 
         WheelPopup.create(project, wheel, screenBounds);

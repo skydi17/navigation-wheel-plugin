@@ -24,20 +24,12 @@ public class CloseButtonListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        closeFileAndDispose();
+        closeFileAndRefresh();
     }
 
-    private void closeFileAndDispose() {
+    private void closeFileAndRefresh() {
         fileEditorManager.closeFile(virtualFile);
-        wheel.dispose();
-
-        if (hasMultipleOpenFiles()) {
-            WheelService.openWheel(project);
-        }
-    }
-
-    private boolean hasMultipleOpenFiles() {
-        return fileEditorManager.getOpenFiles().length > 1;
+        WheelService.refreshWheel(project, wheel);
     }
 
 }
