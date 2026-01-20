@@ -33,3 +33,7 @@ All notable changes to this project will be documented in this file.
 ## [1.1.3] - 2026-01-20
 ### Fixed
 - Fixed an issue where the navigation wheel would not reopen or display correctly after pressing the close button on multi-monitor setups, especially when the IDE is on a secondary screen.
+- Improved wheel resizing and positioning during refresh by explicitly setting window location and size to ensure it stays centered on the correct monitor.
+- Resolved a race condition where the popup could be automatically closed by the IDE during file closing by disabling auto-cancellation and ensuring the popup is recreated if necessary.
+- Enhanced active monitor detection by using KeyboardFocusManager to identify the correctly focused window, ensuring the wheel opens on the intended screen in multi-monitor environments.
+- Added a delay using SwingUtilities.invokeLater when refreshing the wheel after closing a file to ensure all IDE focus and window events are processed.
