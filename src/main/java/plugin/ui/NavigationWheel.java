@@ -12,8 +12,8 @@ import java.awt.image.BufferedImage;
 public class NavigationWheel extends JPanel {
     private final Logger logger = Logger.getInstance(NavigationWheel.class);
 
-    private final int wheelHeight;
-    private final int wheelWidth;
+    private int wheelHeight;
+    private int wheelWidth;
     private JBPopup popup;
 
     public NavigationWheel(int height, int width) {
@@ -21,6 +21,13 @@ public class NavigationWheel extends JPanel {
         this.wheelHeight = height;
         this.wheelWidth = width;
         initializePanel();
+    }
+
+    public void updateDimensions(int height, int width) {
+        this.wheelHeight = height;
+        this.wheelWidth = width;
+        setPreferredSize(new Dimension(wheelWidth, wheelHeight));
+        setSize(wheelWidth, wheelHeight);
     }
 
     private void initializePanel() {

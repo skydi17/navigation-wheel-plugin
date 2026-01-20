@@ -15,8 +15,8 @@ public class WheelPopup {
     public static void create(Project project, NavigationWheel wheel, Rectangle screenBounds) {
         JBPopup popup = JBPopupFactory.getInstance()
                 .createComponentPopupBuilder(wheel, wheel)
-                .setCancelOnClickOutside(true)
-                .setCancelOnWindowDeactivation(true)
+                .setCancelOnClickOutside(false)
+                .setCancelOnWindowDeactivation(false)
                 .setCancelKeyEnabled(true)
                 .setFocusable(true)
                 .setRequestFocus(true)
@@ -31,12 +31,14 @@ public class WheelPopup {
 
         showPopup(project, popup, screenBounds);
 
-        Window window = SwingUtilities.getWindowAncestor(wheel);
-        if (window != null) {
-            window.addWindowFocusListener(new LostFocusWindowListener(wheel));
-            configureWindow(window);
-            SwingUtilities.invokeLater(() -> window.setOpacity(1f));
-        }
+        SwingUtilities.invokeLater(() -> {
+            Window window = SwingUtilities.getWindowAncestor(wheel);
+            if (window != null) {
+                window.addWindowFocusListener(new LostFocusWindowListener(wheel));
+                configureWindow(window);
+                window.setOpacity(1f);
+            }
+        });
 
     }
 
@@ -55,13 +57,14 @@ public class WheelPopup {
     }
 
     private static void showPopup(Project project, JBPopup popup, Rectangle screenBounds) {
-        Window activeWindow = WindowManager.getInstance().getFrame(project);
-        if (activeWindow != null) {
-            popup.showInScreenCoordinates(activeWindow,
-                    new Point(screenBounds.x + screenBounds.width / 2,
-                            screenBounds.y + screenBounds.height / 2));
-        } else {
-            popup.showInFocusCenter();
+        Point center = new Point(screenBounds.x + screenBounds.width / 2,
+                screenBounds.y + screenBounds.height / 2);
+
+        Window parentWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+        if (parentWindow == null) {
+            parentWindow = WindowManager.getInstance().getFrame(project);
         }
+
+        popup.showInScreenCoordinates(parentWindow, center);
     }
 }

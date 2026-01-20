@@ -13,6 +13,7 @@ import plugin.ui.FileButton;
 import plugin.ui.NavigationWheel;
 import plugin.ui.WheelPopup;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -42,10 +43,17 @@ public final class WheelService {
             return;
         }
 
-        Window activeWindow = WindowManager.getInstance().getFrame(project);
-        Rectangle screenBounds = activeWindow != null
-                ? activeWindow.getGraphicsConfiguration().getBounds()
-                : GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+        if (activeWindow == null) {
+            activeWindow = WindowManager.getInstance().getFrame(project);
+        }
+
+        Rectangle screenBounds;
+        if (activeWindow != null && activeWindow.getGraphicsConfiguration() != null) {
+            screenBounds = activeWindow.getGraphicsConfiguration().getBounds();
+        } else {
+            screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        }
 
         Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
         NavigationWheel wheel = new NavigationWheel(
@@ -65,21 +73,47 @@ public final class WheelService {
             return;
         }
 
-        wheel.clearButtons();
+        Window window = SwingUtilities.getWindowAncestor(wheel);
+        Rectangle screenBounds;
+        if (window != null && window.isShowing() && window.getGraphicsConfiguration() != null) {
+            screenBounds = window.getGraphicsConfiguration().getBounds();
+        } else {
+            Window activeWindow = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+            if (activeWindow == null) {
+                activeWindow = WindowManager.getInstance().getFrame(project);
+            }
 
-        Window activeWindow = WindowManager.getInstance().getFrame(project);
-        Rectangle screenBounds = activeWindow != null
-                ? activeWindow.getGraphicsConfiguration().getBounds()
-                : GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+            if (activeWindow != null && activeWindow.getGraphicsConfiguration() != null) {
+                screenBounds = activeWindow.getGraphicsConfiguration().getBounds();
+            } else {
+                screenBounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+            }
+        }
 
         Dimension screenSize = new Dimension(screenBounds.width, screenBounds.height);
+        wheel.updateDimensions(screenSize.height, screenSize.width);
+
+        wheel.clearButtons();
 
         setupFileButtons(project, wheel, screenSize);
+
+        if (window != null && window.isShowing()) {
+            window.setOpacity(1f);
+            window.setBounds(screenBounds);
+            window.setLocation(screenBounds.x, screenBounds.y);
+            window.setSize(screenBounds.width, screenBounds.height);
+            window.revalidate();
+            window.repaint();
+        } else {
+            configureWheel(project, wheel, screenBounds);
+        }
 
         updateWheelListeners(project, wheel);
         wheel.setBackgroundImage();
 
         wheel.requestFocusInWindow();
+        wheel.revalidate();
+        wheel.repaint();
     }
 
     private static void setupFileButtons(

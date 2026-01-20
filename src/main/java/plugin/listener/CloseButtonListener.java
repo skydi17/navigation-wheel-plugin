@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import plugin.service.WheelService;
 import plugin.ui.NavigationWheel;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -29,7 +30,7 @@ public class CloseButtonListener implements ActionListener {
 
     private void closeFileAndRefresh() {
         fileEditorManager.closeFile(virtualFile);
-        WheelService.refreshWheel(project, wheel);
+        SwingUtilities.invokeLater(() -> WheelService.refreshWheel(project, wheel));
     }
 
 }

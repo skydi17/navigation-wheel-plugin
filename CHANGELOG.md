@@ -29,3 +29,7 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - The wheel is no longer recreated when the close button is pressed.
 - The close button is highlighted only when the mouse is directly over it.
+
+## [1.1.3] - 2026-01-20
+### Fixed
+- Fixed an issue where the navigation wheel would not reopen or display correctly after pressing the close button on multi-monitor setups, especially when the IDE is on a secondary screen.

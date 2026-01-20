@@ -16,6 +16,8 @@ public class ConfigureWindowOnPopupShownListener implements JBPopupListener {
         Window window = SwingUtilities.getWindowAncestor(
                 event.asPopup().getContent()
         );
-        configureWindow(window);
+        if (window != null) {
+            configureWindow(window);
+        }
     }
 }
